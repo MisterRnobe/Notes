@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Notes</string>
+    <string name="login_input">Введите логин</string>
+    <string name="password_input">Введите пароль</string>
+    <string name="send_button">Отправить</string>
+</resources>
