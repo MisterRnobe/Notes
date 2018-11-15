@@ -10,19 +10,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import com.android.volley.Request;
-import com.android.volley.toolbox.StringRequest;
-import com.medvedev.nikita.notes.utils.AppController;
-import com.medvedev.nikita.notes.utils.CommandManager;
 import com.medvedev.nikita.notes.utils.RequestManager;
 import com.medvedev.nikita.notes.utils.SessionManager;
-import com.medvedev.nikita.notes.utils.SharedPreferencesManager;
-
-
-import java.util.Map;
-import java.util.TreeMap;
 
 public class LoginActivity extends AppCompatActivity {
     private EditText password, login;
@@ -35,22 +24,26 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        session = new SessionManager(mContext);
+        if (session.isLoggedIn()) {
+            Intent intent = new Intent(this,
+                    MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_TASK_ON_HOME);
+            startActivity(intent);
+            finish();
+        }
         setContentView(R.layout.activity_login);
         Log.i(TAG, "Called onCreate(...)");
         password = findViewById(R.id.passwordInput);
         login = findViewById(R.id.loginInput);
         TextView reg_link = findViewById(R.id.link_to_reg_activity);
         Button b = findViewById(R.id.button5);
-        session = new SessionManager(mContext);
-        if (session.isLoggedIn()) {
-            Intent intent = new Intent(this,
-                    MainActivity.class);
-            startActivity(intent);
-            finish();
-        }
         reg_link.setOnClickListener(v -> {
             Log.i(TAG, "Redirecting to register activity");
-            //рег астивити
+            Intent intent = new Intent(mContext, RegisterActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_TASK_ON_HOME);
+            startActivity(intent);
+            finish();
         });
         b.setOnClickListener(v -> {
             String login_text = login.getText().toString().trim();
@@ -72,15 +65,6 @@ public class LoginActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         Log.i(TAG, "Called onDestroy()");
-    }
-
-    protected void handleRequest(JSONObject json) {
-        String text = "";
-        if (json.getInteger("status") == OK) {
-            text = "Успешно залогинился. Токен: " + json.getJSONObject("body").getString("token");
-        } else {
-            text = "Произошла ошибка. Код: " + json.getString("message");
-        }
     }
 
 }
