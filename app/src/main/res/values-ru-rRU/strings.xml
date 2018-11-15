@@ -4,4 +4,8 @@
     <string name="login_input">Введите логин</string>
     <string name="password_input">Введите пароль</string>
     <string name="send_button">Отправить</string>
+    <string name="empty_password">Введите пароль!</string>
+    <string name="empty_login">Введите логин!</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="action_settings">Настройки</string>
 </resources>

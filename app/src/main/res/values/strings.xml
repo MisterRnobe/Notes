@@ -3,6 +3,8 @@
     <string name="login_input">Enter login</string>
     <string name="password_input">Enter password</string>
     <string name="send_button">Send</string>
+    <string name="empty_password">Enter password!</string>
+    <string name="empty_login">Enter login!</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="action_settings">Settings</string>
 </resources>
