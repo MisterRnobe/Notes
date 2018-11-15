@@ -9,30 +9,29 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.medvedev.nikita.notes.utils.AppController;
 import com.medvedev.nikita.notes.utils.SessionManager;
-import com.medvedev.nikita.notes.utils.SharedPreferencesManager;
 
-import org.json.JSONException;
-import org.json.JSONObject;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 public class LoginActivity extends AppCompatActivity {
     private EditText password, login;
     private static final String TAG = LoginActivity.class.getCanonicalName();
     private SessionManager session;
     private final Context mContext = this;
+    private static final int OK = 0;
+    private static final int ERROR = 1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.i(TAG,"Called onCreate(...)");
         setContentView(R.layout.activity_login);
+        Log.i(TAG,"Called onCreate(...)");
         password = findViewById(R.id.passwordInput);
         login = findViewById(R.id.loginInput);
 
@@ -63,31 +62,10 @@ public class LoginActivity extends AppCompatActivity {
 
     private void checkLogin(String login, String password) {
         String tag_string_req = "req_login";
-        String req_login_url = "";
+        String req_login_url = "http://nikitamedvedev.ddns.net:8080/login";
         Log.i(TAG, "Request send to server");
         StringRequest stringRequest = new StringRequest(Request.Method.POST,
-                req_login_url, response -> {
-            Log.d(TAG, response);
-            try {
-                JSONObject jsonObject = new JSONObject(response);
-                if (!jsonObject.getBoolean("error")) {
-                    session.setLogin(true);
-                    SharedPreferencesManager sharedPreferencesManager = new SharedPreferencesManager();
-                    sharedPreferencesManager.clearUserPreferences(mContext);
-                    sharedPreferencesManager.insertUserPreferences(mContext, login, jsonObject.getString("token"));
-                    Intent intent = new Intent(LoginActivity.this,
-                            MainActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_TASK_ON_HOME);
-                    startActivity(intent);
-                    finish();
-                } else {
-                    Log.e(TAG, jsonObject.getString("error_msg"));
-                    Toast.makeText(getApplicationContext(), jsonObject.getString("error_msg"), Toast.LENGTH_SHORT).show();
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }, error -> {
+                req_login_url, response -> handleRequest(JSON.parseObject(response)), error -> {
             Log.e(TAG, "Error: " + error.getMessage());
             Toast.makeText(getApplicationContext(),
                     error.getMessage(), Toast.LENGTH_LONG).show();
@@ -95,10 +73,9 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             protected Map<String, String> getParams() {
                 // Posting parameters to login url
-                Map<String, String> params = new HashMap<String, String>();
+                Map<String, String> params = new TreeMap<>();
                 params.put("login", login);
                 params.put("password", password);
-
                 return params;
             }
         };
@@ -109,6 +86,19 @@ public class LoginActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         Log.i(TAG, "Called onDestroy()");
+    }
+    protected void handleRequest(JSONObject json)
+    {
+        String text = "";
+        if (json.getInteger("status") == OK)
+        {
+            text = "Успешно залогинился. Токен: "+ json.getJSONObject("body").getString("token");
+        }
+        else
+        {
+            text = "Произошла ошибка. Код: "+json.getString("message");
+        }
+        Toast.makeText(this, text, Toast.LENGTH_LONG).show();
     }
 
 }
