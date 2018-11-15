@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 public class LoginActivity extends AppCompatActivity {
     private EditText password, login;
@@ -22,6 +23,17 @@ public class LoginActivity extends AppCompatActivity {
         Button b = findViewById(R.id.button5);
         b.setOnClickListener(v-> {
             Log.i(TAG, "Login: "+login.getText().toString()+", password: "+password.getText().toString());
+            String login_text = login.getText().toString().trim();
+            String password_text = password.getText().toString().trim();
+            if (!login_text.isEmpty()) {
+                if (!password_text.isEmpty()) {
+                    checkLogin(login_text, password_text);
+                } else {
+                    Toast.makeText(getApplicationContext(), "Please, enter Password!", Toast.LENGTH_LONG).show();
+                }
+            } else {
+                Toast.makeText(getApplicationContext(), "Please, enter Login!", Toast.LENGTH_LONG).show();
+            }
             onLogin();
         });
     }
@@ -34,9 +46,14 @@ public class LoginActivity extends AppCompatActivity {
         this.finish();
     }
 
+    private void checkLogin(String login, String password){
+
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
         Log.i(TAG, "Called onDestroy()");
     }
+
 }
