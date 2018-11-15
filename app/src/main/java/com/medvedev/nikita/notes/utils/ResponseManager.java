@@ -15,7 +15,7 @@ public class ResponseManager {
 
     public static void checkLoginResponse(Context mContext, String jsonString){
         JSONObject jsonObject = JSON.parseObject(jsonString);
-        if (!jsonObject.getBoolean("error")) {
+        if (jsonObject.getInteger("status")!=1) {
             SessionManager session = new SessionManager(mContext);
             session.setLogin(true);
             SharedPreferencesManager sharedPreferencesManager = new SharedPreferencesManager();
@@ -26,8 +26,8 @@ public class ResponseManager {
             mContext.startActivity(intent);
             ((Activity)mContext).finish();
         } else {
-            Log.e(LoginActivity.TAG, jsonObject.getString("error_msg"));
-            Toast.makeText(mContext, jsonObject.getString("error_msg"), Toast.LENGTH_SHORT).show();
+            Log.e(LoginActivity.TAG, Integer.toString(jsonObject.getInteger("message")));
+            Toast.makeText(mContext, Integer.toString(jsonObject.getInteger("message")), Toast.LENGTH_SHORT).show();
         }
     }
 }

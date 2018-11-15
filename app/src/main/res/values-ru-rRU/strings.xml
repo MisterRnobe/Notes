@@ -9,4 +9,8 @@
     <string name="title_activity_main">MainActivity</string>
     <string name="action_settings">Настройки</string>
     <string name="create_account">Новый аккаунт</string>
+    <string name="name_input">Введите имя</string>
+    <string name="surname_input">Введите фамилию</string>
+    <string name="email_input">Введите адрес электорнной почты</string>
+    <string name="show_pass_checkbox">Показать пароль</string>
 </resources>
