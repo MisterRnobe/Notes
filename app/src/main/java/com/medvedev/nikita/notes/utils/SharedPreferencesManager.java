@@ -8,7 +8,6 @@ public class SharedPreferencesManager{
     private static SharedPreferences sp;
     private static SharedPreferences.Editor editor;
     private static String sp_name = "ThisUser";
-    private static String login = "login";
     private static String token = "token";
 
     public void clearUserPreferences(Context context){
@@ -19,9 +18,8 @@ public class SharedPreferencesManager{
         return context.getSharedPreferences(sp_name, Context.MODE_PRIVATE);
     }
 
-    public void insertUserPreferences(Context context, String login_data, String token_data) {
+    public void insertUserPreferences(Context context, String token_data) {
         SharedPreferences.Editor editor = getPrefs(context).edit();
-        editor.putString(login,login_data);
         editor.putString(token,token_data);
         editor.apply();
     }
