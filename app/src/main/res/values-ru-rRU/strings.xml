@@ -11,6 +11,18 @@
     <string name="create_account">Новый аккаунт</string>
     <string name="name_input">Введите имя</string>
     <string name="surname_input">Введите фамилию</string>
-    <string name="email_input">Введите адрес электорнной почты</string>
+    <string name="email_input">Введите email</string>
     <string name="show_pass_checkbox">Показать пароль</string>
+    <string name="empty_name">Введите имя!</string>
+    <string name="empty_surname">Введите фамилию!</string>
+    <string name="empty_email">Введите email!</string>
+    <string name="invalid_email">Введите правильный email!</string>
+    <string name="success_register">Регистрация прошла успешно!</string>
+    <string name="title_register">Регистрация</string>
+    <string name="title_login">Вход</string>
+    <string name="password_output">Пароль</string>
+    <string name="name_output">Имя</string>
+    <string name="surname_output">Фамилия</string>
+    <string name="login_output">Логин</string>
+    <string name="login_with_ex_account">Войти</string>
 </resources>

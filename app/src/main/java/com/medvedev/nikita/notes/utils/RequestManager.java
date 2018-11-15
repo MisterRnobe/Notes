@@ -6,9 +6,11 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
-import com.medvedev.nikita.notes.LoginActivity;
 import com.medvedev.nikita.notes.MainActivity;
+import com.medvedev.nikita.notes.RegisterActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -37,6 +39,33 @@ public class RequestManager {
                 params.put("password", password);
                 return params;
             }
+        };
+        AppController.getInstance().addToRequestQueue(stringRequest, TAG);
+    }
+    public static void registerRequest(Context mContext, String login, String name, String surname, String email, String password){
+        String TAG = "Register request";
+        Log.i(TAG,"Request send to server");
+        StringRequest stringRequest = new StringRequest(Request.Method.POST,
+                CommandManager.REGISTER, response -> {
+                    Log.d(TAG, "Register Response: " + response);
+                    ResponseManager.checkRegisterResponse(mContext,response);
+                }, error -> {
+                    Log.e(TAG, "Registration Error: " + error.getMessage());
+                    Toast.makeText(mContext,
+                            error.getMessage(), Toast.LENGTH_LONG).show();
+                }) {
+
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("login", login);
+                params.put("password", password);
+                params.put("first_name", name);
+                params.put("second_name",surname);
+                params.put("email",email);
+                return params;
+            }
+
         };
         AppController.getInstance().addToRequestQueue(stringRequest, TAG);
     }
