@@ -1,7 +1,5 @@
 package com.medvedev.nikita.notes.utils;
 
-import android.content.res.Resources;
-
 import com.medvedev.nikita.notes.R;
 
 public class ErrorManager {

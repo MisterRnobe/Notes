@@ -1,6 +1,5 @@
 package com.medvedev.nikita.notes.utils;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -12,7 +11,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.medvedev.nikita.notes.LoginActivity;
 import com.medvedev.nikita.notes.MainActivity;
 import com.medvedev.nikita.notes.R;
-import com.medvedev.nikita.notes.utils.ErrorManager;
 
 
 public class ResponseManager {

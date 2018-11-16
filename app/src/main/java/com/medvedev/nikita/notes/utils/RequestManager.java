@@ -1,19 +1,11 @@
 package com.medvedev.nikita.notes.utils;
 
 import android.content.Context;
-import android.content.Intent;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
-import com.medvedev.nikita.notes.MainActivity;
-import com.medvedev.nikita.notes.RegisterActivity;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
