@@ -15,32 +15,28 @@ import com.medvedev.nikita.notes.R;
 
 public class ResponseManager {
 
-    public static void checkLoginResponse(Context mContext, String jsonString) {
-        JSONObject jsonObject = JSON.parseObject(jsonString);
-        if (jsonObject.getInteger("status") != 1) {
-            SessionManager session = new SessionManager(mContext);
-            session.setLogin(true);
-            SharedPreferencesManager sharedPreferencesManager = new SharedPreferencesManager();
-            sharedPreferencesManager.clearUserPreferences(mContext);
-            sharedPreferencesManager.insertUserPreferences(mContext, jsonObject.getJSONObject("body").getString("token"));
-            Intent intent = new Intent(mContext, MainActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_TASK_ON_HOME);
-            mContext.startActivity(intent);
-            ((Activity) mContext).finish();
-        } else {
-            String errorMsg = mContext.getResources().getString(ErrorManager.errorToResID(jsonObject.getInteger("message")));
-            Log.e(LoginActivity.TAG, errorMsg);
-            Toast.makeText(mContext, errorMsg, Toast.LENGTH_LONG).show();
-        }
+    public static void onLogin(Context context, String token)
+    {
+        SessionManager session = new SessionManager(context);
+        session.setLogin(true);
+        SharedPreferencesManager sharedPreferencesManager = SharedPreferencesManager.getInstance();
+        sharedPreferencesManager.clearUserPreferences(context);
+        sharedPreferencesManager.insertUserPreferences(context, token);
+
+        Intent intent = new Intent(context, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_TASK_ON_HOME);
+        context.startActivity(intent);
+        ((Activity) context).finish();
     }
 
+    // FIXME: 16.11.2018 Слишком большой if {}
     public static void checkRegisterResponse(Context mContext, String jsonString) {
         JSONObject jsonObject = JSONObject.parseObject(jsonString);
         if (jsonObject.getInteger("status") != 1) {
             Toast.makeText(mContext, R.string.success_register, Toast.LENGTH_LONG).show();
             SessionManager session = new SessionManager(mContext);
             session.setLogin(true);
-            SharedPreferencesManager sharedPreferencesManager = new SharedPreferencesManager();
+            SharedPreferencesManager sharedPreferencesManager = SharedPreferencesManager.getInstance();
             sharedPreferencesManager.clearUserPreferences(mContext);
             sharedPreferencesManager.insertUserPreferences(mContext, jsonObject.getJSONObject("body").getString("token"));
             Intent intent = new Intent(mContext,

@@ -6,13 +6,13 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
+import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.medvedev.nikita.notes.utils.RequestManager;
 import com.medvedev.nikita.notes.utils.SessionManager;
 
 import java.util.regex.Matcher;
@@ -49,45 +49,9 @@ public class RegisterActivity extends AppCompatActivity {
         btnRegister = findViewById(R.id.register);
         btnLinkToLogin = findViewById(R.id.link_to_login_activity);
         checkBox = findViewById(R.id.showPassCheckBox);
-        btnRegister.setOnClickListener(v -> {
-                    String login = inputLogin.getText().toString().trim();
-                    String name = inputName.getText().toString().trim();
-                    String surname = inputSurname.getText().toString().trim();
-                    String email = inputEmail.getText().toString().trim();
-                    String password = inputPassword.getText().toString().trim();
-                    if (!login.isEmpty()) {
-                        if (!name.isEmpty()) {
-                            if (!surname.isEmpty()) {
-                                if (!email.isEmpty()) {
-                                    if (verifyEmail(email)) {
-                                        if (!password.isEmpty()) {
-                                            RequestManager.registerRequest(mContext, login, name, surname, email, password);
-                                        } else {
-                                            Toast.makeText(mContext,
-                                                    R.string.empty_password, Toast.LENGTH_LONG)
-                                                    .show();
-                                        }
-                                    } else {
-                                        Toast.makeText(mContext, R.string.invalid_email, Toast.LENGTH_LONG).show();
-                                    }
-                                } else {
-                                    Toast.makeText(mContext, R.string.empty_email, Toast.LENGTH_LONG).show();
-                                }
-                            } else {
-                                Toast.makeText(mContext, R.string.empty_surname, Toast.LENGTH_LONG).show();
-                            }
-                        } else {
-                            Toast.makeText(mContext,
-                                    R.string.empty_name, Toast.LENGTH_LONG)
-                                    .show();
-                        }
-                    } else {
-                        Toast.makeText(mContext,
-                                R.string.empty_login, Toast.LENGTH_LONG)
-                                .show();
-                    }
-                }
-        );
+
+        btnRegister.setOnClickListener(this::onClickRegisterButton);
+
         btnLinkToLogin.setOnClickListener(v -> {
             Intent i = new Intent(getApplicationContext(),
                     LoginActivity.class);
@@ -115,5 +79,45 @@ public class RegisterActivity extends AppCompatActivity {
         Pattern pattern = Pattern.compile(EMAIL_REGEX, Pattern.CASE_INSENSITIVE);
         Matcher matcher = pattern.matcher(email);
         return matcher.matches();
+    }
+    // FIXME: 16.11.2018 Что это за ужас?!
+    private void onClickRegisterButton(View v)
+    {
+        String login = inputLogin.getText().toString().trim();
+        String name = inputName.getText().toString().trim();
+        String surname = inputSurname.getText().toString().trim();
+        String email = inputEmail.getText().toString().trim();
+        String password = inputPassword.getText().toString().trim();
+        if (!login.isEmpty()) {
+            if (!name.isEmpty()) {
+                if (!surname.isEmpty()) {
+                    if (!email.isEmpty()) {
+                        if (verifyEmail(email)) {
+                            if (!password.isEmpty()) {
+                                //RequestManager.registerRequest(mContext, login, name, surname, email, password);
+                            } else {
+                                Toast.makeText(mContext,
+                                        R.string.empty_password, Toast.LENGTH_LONG)
+                                        .show();
+                            }
+                        } else {
+                            Toast.makeText(mContext, R.string.invalid_email, Toast.LENGTH_LONG).show();
+                        }
+                    } else {
+                        Toast.makeText(mContext, R.string.empty_email, Toast.LENGTH_LONG).show();
+                    }
+                } else {
+                    Toast.makeText(mContext, R.string.empty_surname, Toast.LENGTH_LONG).show();
+                }
+            } else {
+                Toast.makeText(mContext,
+                        R.string.empty_name, Toast.LENGTH_LONG)
+                        .show();
+            }
+        } else {
+            Toast.makeText(mContext,
+                    R.string.empty_login, Toast.LENGTH_LONG)
+                    .show();
+        }
     }
 }

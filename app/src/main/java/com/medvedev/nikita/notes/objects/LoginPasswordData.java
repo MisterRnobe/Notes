@@ -1,5 +1,9 @@
 package com.medvedev.nikita.notes.objects;
 
+import com.medvedev.nikita.notes.utils.FluidBuilderMap;
+
+import java.util.Map;
+
 public class LoginPasswordData extends Body {
     private String login;
     private String password;
@@ -20,5 +24,10 @@ public class LoginPasswordData extends Body {
     public LoginPasswordData setPassword(String password) {
         this.password = password;
         return this;
+    }
+
+    @Override
+    public Map<String, String> getAsMap() {
+        return new FluidBuilderMap().putFluid("login", login).putFluid("password", password);
     }
 }

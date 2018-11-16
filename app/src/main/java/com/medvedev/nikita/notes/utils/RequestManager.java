@@ -5,11 +5,13 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.toolbox.StringRequest;
 import com.medvedev.nikita.notes.objects.Body;
 import com.medvedev.nikita.notes.objects.LoginPasswordData;
+import com.medvedev.nikita.notes.objects.Notes;
 import com.medvedev.nikita.notes.objects.Token;
 
 import java.util.Map;
@@ -22,6 +24,8 @@ public class RequestManager {
     public static final String LOGIN = "login";
     public static final String ADD_NOTE = "add_note";
     public static final String GET_NOTES = "get_notes";
+    public static final int OK = 0;
+    public static final int ERROR = 1;
 
     private static final Map<String, Command> commandMap = new TreeMap<>();
     static {
@@ -32,39 +36,51 @@ public class RequestManager {
     }
 
     //Другие запросы можно строить по такому же принципу
-    public static void loginRequest(Context mContext,String login, String password){
+    public static void loginRequest(Context mContext, LoginPasswordData body){
 
         doRequest(LOGIN, (l, t)->{
-                    Toast.makeText(mContext, t.getToken(), Toast.LENGTH_LONG).show();
-                }, new LoginPasswordData().setLogin(login).setPassword(password),
+                    ResponseManager.onLogin(mContext, t.getToken());
+                },(req, errCode)->{
+                    Toast.makeText(mContext, "Ошибка! Код: "+errCode, Toast.LENGTH_LONG).show();
+                }, body,
                 Token.class);
-
-        /*MyRequest request = new MyRequest(Request.Method.POST,
-                CommandManager.LOGIN, response -> {
-            Log.d(TAG, response);
-            ResponseManager.checkLoginResponse(mContext,response);
-        }, error -> {
-            Log.e(TAG, "Error: " + error.getMessage());
-            Toast.makeText(mContext,
-                    error.getMessage(), Toast.LENGTH_LONG).show();
-        }).setBody(new LoginPasswordData().setLogin(login).setPassword(password));
-        AppController.getInstance().addToRequestQueue(stringRequest, TAG);*/
     }
-    //E - класс для передаваемых аргументов
-    //T - класс для получаемого объекта
-    private static<E extends Body, T extends Body> void doRequest(String function, BiConsumer<E,T> onSuccess, E params, Class<T> clazz)
+    public static void requestNotes(Token token, Consumer<Notes> callback)
+    {
+        doRequest(GET_NOTES, (req, notes)->
+        {
+            callback.accept(notes);
+        }, (req1, errCode) -> {}, token, Notes.class);
+    }
+    /**
+     * Шаблон, на основе которого можно построить конкретные запросы
+     *
+     * @param function - Запрашиваемая функция, одна из объявленных в этом классе
+     * @param onSuccess - Callback, вызываемый, когда приходит ответ со статусом OK
+     * @param onError - Callback, вызываемый, когда приходит ответ со статусом ERROR
+     * @param params - Параметры, передаваемые в запросе
+     * @param clazz - Класс, к которому нужно привести тело ответа (поле body)
+     * @param <E> - Класс, объект которого передается как параметры запроса
+     * @param <T> - см. clazz
+     */
+    private static<E extends Body, T extends Body> void doRequest(String function, BiConsumer<E,T> onSuccess, BiConsumer<E, Integer> onError, E params, Class<T> clazz)
     {
         Command c = commandMap.get(function);
         if (c == null)
             return;
         Log.i("RequestManager", "Request \""+c.getName()+"\" is sending to server...");
 
-        MyRequest request = new MyRequest(Request.Method.POST, server_url + c.getName(),
+        MyRequest request = new MyRequest(c.getMethod(), server_url + c.getName(),
                 r->{
-                    onSuccess.accept(params, JSON.parseObject(r).getJSONObject("body").toJavaObject(clazz));
+                    JSONObject response = JSON.parseObject(r);
+                    int code = response.getInteger("status");
+                    if (code == OK)
+                        onSuccess.accept(params, response.getJSONObject("body").toJavaObject(clazz));
+                    else
+                        onError.accept(params, response.getInteger("message"));
                 },
                 e->{
-                    // TODO: 15.11.2018 Implement
+
                 }).setBody(params);
         AppController.getInstance().addToRequestQueue(request, c.getName());
     }
@@ -87,5 +103,8 @@ public class RequestManager {
     }
     public interface BiConsumer<T, U> {
         void accept(T var1, U var2);
+    }
+    public interface Consumer<T> {
+        void accept(T var1);
     }
 }

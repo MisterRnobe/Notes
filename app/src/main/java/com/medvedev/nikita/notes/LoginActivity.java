@@ -10,16 +10,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-
+import com.medvedev.nikita.notes.objects.LoginPasswordData;
 import com.medvedev.nikita.notes.utils.RequestManager;
 import com.medvedev.nikita.notes.utils.SessionManager;
-import com.medvedev.nikita.notes.utils.SharedPreferencesManager;
-
-
-import java.util.Map;
-import java.util.TreeMap;
 
 public class LoginActivity extends AppCompatActivity {
     private EditText password, login;
@@ -50,11 +44,11 @@ public class LoginActivity extends AppCompatActivity {
             //рег астивити
         });
         b.setOnClickListener(v -> {
-            String login_text = login.getText().toString().trim();
-            String password_text = password.getText().toString().trim();
-            if (!login_text.isEmpty()) {
-                if (!password_text.isEmpty()) {
-                    RequestManager.loginRequest(mContext,login_text,password_text);
+            String loginText = login.getText().toString().trim();
+            String passwordText = password.getText().toString().trim();
+            if (!loginText.isEmpty()) {
+                if (!passwordText.isEmpty()) {
+                    RequestManager.loginRequest(mContext, new LoginPasswordData().setLogin(loginText).setPassword(passwordText));
                 } else {
                     Toast.makeText(getApplicationContext(), R.string.empty_password, Toast.LENGTH_LONG).show();
                 }
