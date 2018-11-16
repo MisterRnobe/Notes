@@ -24,7 +24,7 @@
                     android:id="@+id/loginView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/login_input" />
+                    android:text="@string/login_output" />
 
                 <EditText
                     android:id="@+id/loginInput"
@@ -42,7 +42,7 @@
                     android:id="@+id/textName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/name_input" />
+                    android:text="@string/name_output" />
 
                 <EditText
                     android:id="@+id/nameInput"
@@ -60,7 +60,7 @@
                     android:id="@+id/textSurname"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/surname_input" />
+                    android:text="@string/surname_output" />
 
                 <EditText
                     android:id="@+id/surnameInput"
@@ -78,7 +78,7 @@
                     android:id="@+id/textEmail"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/email_input" />
+                    android:text="@string/email_output" />
 
                 <EditText
                     android:id="@+id/emailInput"
@@ -96,7 +96,7 @@
                     android:id="@+id/textView3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/password_input" />
+                    android:text="@string/password_output" />
 
                 <EditText
                     android:id="@+id/passwordInput"
@@ -124,14 +124,15 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <TextView
-                android:id="@+id/link_to_reg_activity"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/create_account"
-                android:textColor="@android:color/holo_blue_light" />
+                <TextView
+                    android:id="@+id/link_to_login_activity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/login_with_ex_account"
+                    android:textAlignment="textEnd"
+                    android:textColor="@android:color/holo_blue_light" />
             <Button
-                android:id="@+id/button5"
+                android:id="@+id/register"
                 android:layout_width="78dp"
                 android:layout_height="wrap_content"
                 android:text="@string/send_button" />

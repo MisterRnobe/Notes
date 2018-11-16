@@ -24,7 +24,7 @@
                     android:id="@+id/textView4"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/login_input" />
+                    android:text="@string/login_output" />
 
                 <EditText
                     android:id="@+id/loginInput"
@@ -43,7 +43,7 @@
                     android:id="@+id/textView3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/password_input" />
+                    android:text="@string/password_output" />
 
                 <EditText
                     android:id="@+id/passwordInput"
