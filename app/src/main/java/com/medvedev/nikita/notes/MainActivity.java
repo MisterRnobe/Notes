@@ -26,15 +26,11 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onStop() {
-        Log.i("STOPFROMSTOP","logout from stop");
         super.onStop();
         session.setLogin(false);
-        Intent intent = new Intent(this, LoginActivity.class);
-        startActivity(intent);
     }
 
     private void logoutUser() {
-        Log.i("LOGOUTFROMLOGOUT","logout from method");
         session.setLogin(false);
         Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
