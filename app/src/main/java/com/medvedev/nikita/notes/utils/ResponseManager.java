@@ -12,13 +12,14 @@ import com.alibaba.fastjson.JSONObject;
 import com.medvedev.nikita.notes.LoginActivity;
 import com.medvedev.nikita.notes.MainActivity;
 import com.medvedev.nikita.notes.R;
-import com.medvedev.nikita.notes.RegisterActivity;
+import com.medvedev.nikita.notes.utils.ErrorManager;
+
 
 public class ResponseManager {
 
-    public static void checkLoginResponse(Context mContext, String jsonString){
+    public static void checkLoginResponse(Context mContext, String jsonString) {
         JSONObject jsonObject = JSON.parseObject(jsonString);
-        if (jsonObject.getInteger("status")!=1) {
+        if (jsonObject.getInteger("status") != 1) {
             SessionManager session = new SessionManager(mContext);
             session.setLogin(true);
             SharedPreferencesManager sharedPreferencesManager = new SharedPreferencesManager();
@@ -27,15 +28,17 @@ public class ResponseManager {
             Intent intent = new Intent(mContext, MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_TASK_ON_HOME);
             mContext.startActivity(intent);
-            ((Activity)mContext).finish();
+            ((Activity) mContext).finish();
         } else {
-            Log.e(LoginActivity.TAG, Integer.toString(jsonObject.getInteger("message")));
-            Toast.makeText(mContext, Integer.toString(jsonObject.getInteger("message")), Toast.LENGTH_SHORT).show();
+            String errorMsg = mContext.getResources().getString(ErrorManager.errorToResID(jsonObject.getInteger("message")));
+            Log.e(LoginActivity.TAG, errorMsg);
+            Toast.makeText(mContext, errorMsg, Toast.LENGTH_LONG).show();
         }
     }
-    public static void checkRegisterResponse(Context mContext,String jsonString){
+
+    public static void checkRegisterResponse(Context mContext, String jsonString) {
         JSONObject jsonObject = JSONObject.parseObject(jsonString);
-        if (jsonObject.getInteger("status")!=1) {
+        if (jsonObject.getInteger("status") != 1) {
             Toast.makeText(mContext, R.string.success_register, Toast.LENGTH_LONG).show();
             SessionManager session = new SessionManager(mContext);
             session.setLogin(true);
@@ -45,11 +48,12 @@ public class ResponseManager {
             Intent intent = new Intent(mContext,
                     MainActivity.class);
             mContext.startActivity(intent);
-            ((Activity)mContext).finish();
+            ((Activity) mContext).finish();
 
         } else {
-            Log.e(LoginActivity.TAG, Integer.toString(jsonObject.getInteger("message")));
-            Toast.makeText(mContext, Integer.toString(jsonObject.getInteger("message")), Toast.LENGTH_SHORT).show();
+            String errorMsg = mContext.getResources().getString(ErrorManager.errorToResID(jsonObject.getInteger("message")));
+            Log.e(LoginActivity.TAG, errorMsg);
+            Toast.makeText(mContext, errorMsg, Toast.LENGTH_LONG).show();
 
         }
     }

@@ -25,4 +25,19 @@
     <string name="surname_output">Фамилия</string>
     <string name="login_output">Логин</string>
     <string name="login_with_ex_account">Войти</string>
+    <string name="short_login">Логин слишком короткий</string>
+    <string name="long_login">Логин слишком длинный</string>
+    <string name="login_exists">Логин занят</string>
+    <string name="wrong_login_symbols">Логин содержит посторонние символы</string>
+    <string name="wrong_mail">Неверный email</string>
+    <string name="mail_exists">Email занят</string>
+    <string name="bad_token">Неверный токен</string>
+    <string name="expired_token">Срок действия токена истек</string>
+    <string name="requires_token">Требуется токен</string>
+    <string name="bad_data">Неверные данные</string>
+    <string name="wrong_request_parameters">Неверные параметры</string>
+    <string name="internal_error">Внутренняя ошибка</string>
+    <string name="empty_body">Пустое тело запроса</string>
+    <string name="wrong_function">Неверная функция</string>
+    <string name="short_password">Пароль слишком короткий</string>
 </resources>
