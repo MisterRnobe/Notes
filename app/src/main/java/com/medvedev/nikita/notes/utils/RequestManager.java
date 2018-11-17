@@ -9,6 +9,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.toolbox.StringRequest;
+import com.medvedev.nikita.notes.MainActivity;
 import com.medvedev.nikita.notes.objects.Body;
 import com.medvedev.nikita.notes.objects.LoginPasswordData;
 import com.medvedev.nikita.notes.objects.Notes;
@@ -26,6 +27,8 @@ public class RequestManager {
     public static final String LOGIN = "login";
     public static final String ADD_NOTE = "add_note";
     public static final String GET_NOTES = "get_notes";
+    //TODO: вставить имя функции
+    public static final String TOKEN_LOGIN = "";
     public static final int OK = 0;
     public static final int ERROR = 1;
 
@@ -41,9 +44,7 @@ public class RequestManager {
     //Другие запросы можно строить по такому же принципу
     public static void loginRequest(Context mContext, LoginPasswordData body) {
 
-        doRequest(LOGIN, (l, t) -> {
-                    ResponseManager.onLogin(mContext, t.getToken());
-                }, (req, errCode) -> {
+        doRequest(LOGIN, (l, t) -> ResponseManager.onLogin(mContext, t.getToken()), (req, errCode) -> {
                     Toast.makeText(mContext, "Ошибка! " + mContext.getResources().getString(ErrorManager.errorToResID(errCode)), Toast.LENGTH_LONG).show();
                 }, body,
                 Token.class);
@@ -57,9 +58,21 @@ public class RequestManager {
             Toast.makeText(context, "Ошибка! " + context.getResources().getString(ErrorManager.errorToResID(errCode)), Toast.LENGTH_LONG).show();
         }, r, Notes.class);
     }
+  /**
+   * Запрос, осуществляющий авторизацию при помощи токена
+    Если токен верный, сервер вернет новый токен и откроет MainActivity
+    Если токен неверный, оставит на логин активити */
 
+    public static void tokenRequest(Context mContext){
+        doRequest(TOKEN_LOGIN,
+                (l,t)->
+                        ResponseManager.onLogin(mContext, t.getToken()),
+                (params,error)->
+                        Log.e("Token Request",mContext.getResources().getString(ErrorManager.errorToResID(error))),
+                new Token().setToken(SharedPreferencesManager.getInstance().getToken()),
+                Token.class);
+    }
     public static void regRequest(Context mContext, RegisterData body) {
-        Log.i("REGISTER_MAP",body.getAsMap().toString());
         doRequest(REGISTER,
                 (l, t) ->
                         ResponseManager.checkRegisterResponse(mContext, t.getToken()),

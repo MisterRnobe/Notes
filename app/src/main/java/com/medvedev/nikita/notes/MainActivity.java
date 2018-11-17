@@ -10,10 +10,8 @@ import android.widget.TextView;
 import com.medvedev.nikita.notes.objects.Note;
 import com.medvedev.nikita.notes.objects.Notes;
 import com.medvedev.nikita.notes.objects.NotesRequest;
-import com.medvedev.nikita.notes.objects.Token;
 import com.medvedev.nikita.notes.utils.RequestManager;
 import com.medvedev.nikita.notes.utils.SessionManager;
-import com.medvedev.nikita.notes.utils.SharedPreferencesManager;
 import com.medvedev.nikita.notes.utils.Tokenizer;
 
 import java.util.List;

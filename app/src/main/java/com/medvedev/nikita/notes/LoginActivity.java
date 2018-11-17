@@ -24,6 +24,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        RequestManager.tokenRequest(mContext);
         setContentView(R.layout.activity_login);
         Log.i(TAG, "Called onCreate(...)");
         password = findViewById(R.id.passwordInput);

@@ -2,6 +2,7 @@ package com.medvedev.nikita.notes.utils;
 
 
 import android.app.Application;
+import android.content.Context;
 import android.text.TextUtils;
 
 import com.android.volley.Request;
@@ -14,6 +15,7 @@ public class AppController extends Application {
     public static final String TAG = AppController.class.getSimpleName();
 
     private RequestQueue mRequestQueue;
+    private static Context context;
     //private ImageLoader mImageLoader;
 
     private static AppController mInstance;
@@ -22,8 +24,12 @@ public class AppController extends Application {
     public void onCreate() {
         super.onCreate();
         mInstance = this;
-    }
+        AppController.context = getApplicationContext();
 
+    }
+    public static Context getAppContext(){
+        return AppController.context;
+    }
     public static synchronized AppController getInstance() {
         return mInstance;
     }

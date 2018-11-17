@@ -16,28 +16,27 @@ public class SharedPreferencesManager{
 
     private static SharedPreferences sp;
     private static SharedPreferences.Editor editor;
-    private static String sp_name = "ThisUser";
-    private static String token = "token";
+    private final static String sp_name = "ThisUser";
+    private final static String token_key = "token";
 
     private SharedPreferencesManager(){}
 
 
-    public void clearUserPreferences(Context context){
-        sp = getPrefs(context);
+    public void clearUserPreferences(){
+        sp = getPrefs();
         sp.edit().clear().apply();
     }
-    private SharedPreferences getPrefs(Context context) {
-        return context.getSharedPreferences(sp_name, Context.MODE_PRIVATE);
+    private SharedPreferences getPrefs() {
+        return AppController.getAppContext().getSharedPreferences(sp_name, Context.MODE_PRIVATE);
+    }
+    public String getToken(){
+        return getPrefs().getString(token_key,"");
     }
 
-    public void insertUserPreferences(Context context, String tokenData) {
-        SharedPreferences.Editor editor = getPrefs(context).edit();
-        editor.putString(token, tokenData);
+    public void insertUserPreferences(String tokenData) {
+        editor = getPrefs().edit();
+        editor.putString(token_key, tokenData);
         editor.apply();
-    }
-    public String getToken()
-    {
-        return token;
     }
 }
 

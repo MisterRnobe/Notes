@@ -3,12 +3,8 @@ package com.medvedev.nikita.notes.utils;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.widget.Toast;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import com.medvedev.nikita.notes.LoginActivity;
 import com.medvedev.nikita.notes.MainActivity;
 import com.medvedev.nikita.notes.R;
 
@@ -29,14 +25,13 @@ public class ResponseManager {
         context.startActivity(intent);
         ((Activity) context).finish();
     }
-
     public static void checkRegisterResponse(Context mContext, String token) {
             Toast.makeText(mContext, R.string.success_register, Toast.LENGTH_LONG).show();
             SessionManager session = new SessionManager(mContext);
             session.setLogin(true);
             SharedPreferencesManager sharedPreferencesManager = SharedPreferencesManager.getInstance();
-            sharedPreferencesManager.clearUserPreferences(mContext);
-            sharedPreferencesManager.insertUserPreferences(mContext, token);
+            sharedPreferencesManager.clearUserPreferences();
+            sharedPreferencesManager.insertUserPreferences(token);
             Intent intent = new Intent(mContext,
                     MainActivity.class);
             mContext.startActivity(intent);
