@@ -1,6 +1,6 @@
 package com.medvedev.nikita.notes.objects;
 
-import com.medvedev.nikita.notes.utils.FluidBuilderMap;
+import com.medvedev.nikita.notes.utils.FluentBuilderMap;
 
 import java.util.Map;
 
@@ -18,6 +18,6 @@ public class Token extends Body {
 
     @Override
     public Map<String, String> getAsMap() {
-        return new FluidBuilderMap().putFluid("token", token);
+        return new FluentBuilderMap().putFluent("token", token);
     }
 }

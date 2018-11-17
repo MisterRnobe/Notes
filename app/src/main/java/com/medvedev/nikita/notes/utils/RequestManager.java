@@ -12,11 +12,12 @@ import com.android.volley.toolbox.StringRequest;
 import com.medvedev.nikita.notes.objects.Body;
 import com.medvedev.nikita.notes.objects.LoginPasswordData;
 import com.medvedev.nikita.notes.objects.Notes;
+import com.medvedev.nikita.notes.objects.NotesRequest;
 import com.medvedev.nikita.notes.objects.Token;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
-import java.util.function.BiConsumer;
 
 public class RequestManager {
     private static final String server_url = "http://nikitamedvedev.ddns.net:8080/";
@@ -41,16 +42,18 @@ public class RequestManager {
         doRequest(LOGIN, (l, t)->{
                     ResponseManager.onLogin(mContext, t.getToken());
                 },(req, errCode)->{
-                    Toast.makeText(mContext, "Ошибка! Код: "+errCode, Toast.LENGTH_LONG).show();
+                    Toast.makeText(mContext, "Ошибка! "+mContext.getResources().getString(ErrorManager.errorToResID(errCode)), Toast.LENGTH_LONG).show();
                 }, body,
                 Token.class);
     }
-    public static void requestNotes(Token token, Consumer<Notes> callback)
+    public static void requestNotes(NotesRequest r, Context context, Consumer<Notes> callback)
     {
         doRequest(GET_NOTES, (req, notes)->
         {
             callback.accept(notes);
-        }, (req1, errCode) -> {}, token, Notes.class);
+        }, (req1, errCode) -> {
+            Toast.makeText(context, "Ошибка! "+context.getResources().getString(ErrorManager.errorToResID(errCode)), Toast.LENGTH_LONG).show();
+        }, r, Notes.class);
     }
     /**
      * Шаблон, на основе которого можно построить конкретные запросы
@@ -70,7 +73,7 @@ public class RequestManager {
             return;
         Log.i("RequestManager", "Request \""+c.getName()+"\" is sending to server...");
 
-        MyRequest request = new MyRequest(c.getMethod(), server_url + c.getName(),
+        MyRequest request = MyRequest.create(c.getMethod(), server_url + c.getName(),
                 r->{
                     JSONObject response = JSON.parseObject(r);
                     int code = response.getInteger("status");
@@ -81,7 +84,8 @@ public class RequestManager {
                 },
                 e->{
 
-                }).setBody(params);
+                },params);
+
         AppController.getInstance().addToRequestQueue(request, c.getName());
     }
     private static class MyRequest extends StringRequest
@@ -98,7 +102,28 @@ public class RequestManager {
 
         @Override
         public Map<String, String> getParams() {
+
             return params;
+        }
+        public static MyRequest create(int method, String url, Response.Listener<String> listener, Response.ErrorListener errorListener, Body params)
+        {
+
+            if (method != Method.GET)
+                return new MyRequest(method, url, listener, errorListener).setBody(params);
+
+            StringBuilder stringParameters = new StringBuilder("?");
+            Set<Map.Entry<String, String>> entries = params.getAsMap().entrySet();
+            for(Map.Entry<String, String> entry: entries)
+            {
+                stringParameters.append(entry.getKey());
+                stringParameters.append("=");
+                stringParameters.append(entry.getValue());
+                stringParameters.append("&");
+            }
+            //& - последний символ, надо убрать
+            stringParameters.deleteCharAt(stringParameters.length() - 1);
+            url = url + stringParameters.toString();
+            return new MyRequest(method, url, listener, errorListener);
         }
     }
     public interface BiConsumer<T, U> {

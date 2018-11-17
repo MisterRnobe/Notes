@@ -9,10 +9,12 @@ import android.widget.TextView;
 
 import com.medvedev.nikita.notes.objects.Note;
 import com.medvedev.nikita.notes.objects.Notes;
+import com.medvedev.nikita.notes.objects.NotesRequest;
 import com.medvedev.nikita.notes.objects.Token;
 import com.medvedev.nikita.notes.utils.RequestManager;
 import com.medvedev.nikita.notes.utils.SessionManager;
 import com.medvedev.nikita.notes.utils.SharedPreferencesManager;
+import com.medvedev.nikita.notes.utils.Tokenizer;
 
 import java.util.List;
 
@@ -30,7 +32,9 @@ public class MainActivity extends AppCompatActivity {
         FloatingActionButton fab = findViewById(R.id.fab);
         textView = findViewById(R.id.ouputText);
 
-        RequestManager.requestNotes(new Token().setToken(SharedPreferencesManager.getInstance().getToken()), this::onGetNotes);
+        NotesRequest r = new NotesRequest().setCount(20).setOffset(0);
+        r.setToken(Tokenizer.token);
+        RequestManager.requestNotes(r,this, this::onGetNotes);
 
         fab.setOnClickListener(view -> logoutUser());
     }

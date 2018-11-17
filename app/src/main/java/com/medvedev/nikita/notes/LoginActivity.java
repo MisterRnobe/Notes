@@ -20,8 +20,6 @@ public class LoginActivity extends AppCompatActivity {
     public static final String TAG = LoginActivity.class.getCanonicalName();
     private SessionManager session;
     private final Context mContext = this;
-    private static final int OK = 0;
-    private static final int ERROR = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,15 +61,6 @@ public class LoginActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         Log.i(TAG, "Called onDestroy()");
-    }
-
-    protected void handleRequest(JSONObject json) {
-        String text = "";
-        if (json.getInteger("status") == OK) {
-            text = "Успешно залогинился. Токен: " + json.getJSONObject("body").getString("token");
-        } else {
-            text = "Произошла ошибка. Код: " + json.getString("message");
-        }
     }
 
 }

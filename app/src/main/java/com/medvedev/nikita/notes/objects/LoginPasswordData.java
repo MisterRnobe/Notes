@@ -1,6 +1,6 @@
 package com.medvedev.nikita.notes.objects;
 
-import com.medvedev.nikita.notes.utils.FluidBuilderMap;
+import com.medvedev.nikita.notes.utils.FluentBuilderMap;
 
 import java.util.Map;
 
@@ -28,6 +28,6 @@ public class LoginPasswordData extends Body {
 
     @Override
     public Map<String, String> getAsMap() {
-        return new FluidBuilderMap().putFluid("login", login).putFluid("password", password);
+        return new FluentBuilderMap().putFluent("login", login).putFluent("password", password);
     }
 }

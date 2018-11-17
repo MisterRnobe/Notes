@@ -17,12 +17,13 @@ public class ResponseManager {
 
     public static void onLogin(Context context, String token)
     {
-        SessionManager session = new SessionManager(context);
+        /*SessionManager session = new SessionManager(context);
         session.setLogin(true);
         SharedPreferencesManager sharedPreferencesManager = SharedPreferencesManager.getInstance();
         sharedPreferencesManager.clearUserPreferences(context);
-        sharedPreferencesManager.insertUserPreferences(context, token);
+        sharedPreferencesManager.insertUserPreferences(context, token);*/
 
+        Tokenizer.token = token;
         Intent intent = new Intent(context, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_TASK_ON_HOME);
         context.startActivity(intent);

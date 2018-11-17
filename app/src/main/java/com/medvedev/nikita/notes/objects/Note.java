@@ -1,6 +1,6 @@
 package com.medvedev.nikita.notes.objects;
 
-import com.medvedev.nikita.notes.utils.FluidBuilderMap;
+import com.medvedev.nikita.notes.utils.FluentBuilderMap;
 
 import java.util.Map;
 
@@ -47,10 +47,10 @@ public class Note extends Body {
 
     @Override
     public Map<String, String> getAsMap() {
-        return new FluidBuilderMap()
-                .putFluid("title", title)
-                .putFluid("note", note)
-                .putFluid("created", created)
-                .putFluid("id", id);
+        return new FluentBuilderMap()
+                .putFluent("title", title)
+                .putFluent("note", note)
+                .putFluent("created", created)
+                .putFluent("id", id);
     }
 }
