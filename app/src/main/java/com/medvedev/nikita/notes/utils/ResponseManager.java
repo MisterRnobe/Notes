@@ -30,26 +30,16 @@ public class ResponseManager {
         ((Activity) context).finish();
     }
 
-    // FIXME: 16.11.2018 Слишком большой if {}
-    public static void checkRegisterResponse(Context mContext, String jsonString) {
-        JSONObject jsonObject = JSONObject.parseObject(jsonString);
-        if (jsonObject.getInteger("status") != 1) {
+    public static void checkRegisterResponse(Context mContext, String token) {
             Toast.makeText(mContext, R.string.success_register, Toast.LENGTH_LONG).show();
             SessionManager session = new SessionManager(mContext);
             session.setLogin(true);
             SharedPreferencesManager sharedPreferencesManager = SharedPreferencesManager.getInstance();
             sharedPreferencesManager.clearUserPreferences(mContext);
-            sharedPreferencesManager.insertUserPreferences(mContext, jsonObject.getJSONObject("body").getString("token"));
+            sharedPreferencesManager.insertUserPreferences(mContext, token);
             Intent intent = new Intent(mContext,
                     MainActivity.class);
             mContext.startActivity(intent);
             ((Activity) mContext).finish();
-
-        } else {
-            String errorMsg = mContext.getResources().getString(ErrorManager.errorToResID(jsonObject.getInteger("message")));
-            Log.e(LoginActivity.TAG, errorMsg);
-            Toast.makeText(mContext, errorMsg, Toast.LENGTH_LONG).show();
-
-        }
     }
 }

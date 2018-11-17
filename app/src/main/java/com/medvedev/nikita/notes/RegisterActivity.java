@@ -13,6 +13,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.medvedev.nikita.notes.objects.RegisterData;
+import com.medvedev.nikita.notes.utils.RequestManager;
 import com.medvedev.nikita.notes.utils.SessionManager;
 
 import java.util.regex.Matcher;
@@ -30,6 +32,7 @@ public class RegisterActivity extends AppCompatActivity {
     private SessionManager session;
     private Context mContext = this;
     private CheckBox checkBox;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,9 +61,9 @@ public class RegisterActivity extends AppCompatActivity {
             startActivity(i);
             finish();
         });
-        checkBox.setOnClickListener(v->{
-            boolean checked = ((CheckBox)v).isChecked();
-            switch (v.getId()){
+        checkBox.setOnClickListener(v -> {
+            boolean checked = ((CheckBox) v).isChecked();
+            switch (v.getId()) {
                 case R.id.showPassCheckBox:
                     if (checked)
                         inputPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
@@ -73,51 +76,31 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
 
-
     private boolean verifyEmail(String email) {
         String EMAIL_REGEX = "^[\\w-\\+]+(\\.[\\w]+)*@[\\w-]+(\\.[\\w]+)*(\\.[a-z]{2,})$";
         Pattern pattern = Pattern.compile(EMAIL_REGEX, Pattern.CASE_INSENSITIVE);
         Matcher matcher = pattern.matcher(email);
         return matcher.matches();
     }
-    // FIXME: 16.11.2018 Что это за ужас?!
-    private void onClickRegisterButton(View v)
-    {
+    private void onClickRegisterButton(View v) {
         String login = inputLogin.getText().toString().trim();
         String name = inputName.getText().toString().trim();
         String surname = inputSurname.getText().toString().trim();
         String email = inputEmail.getText().toString().trim();
         String password = inputPassword.getText().toString().trim();
-        if (!login.isEmpty()) {
-            if (!name.isEmpty()) {
-                if (!surname.isEmpty()) {
-                    if (!email.isEmpty()) {
-                        if (verifyEmail(email)) {
-                            if (!password.isEmpty()) {
-                                //RequestManager.registerRequest(mContext, login, name, surname, email, password);
-                            } else {
-                                Toast.makeText(mContext,
-                                        R.string.empty_password, Toast.LENGTH_LONG)
-                                        .show();
-                            }
-                        } else {
-                            Toast.makeText(mContext, R.string.invalid_email, Toast.LENGTH_LONG).show();
-                        }
-                    } else {
-                        Toast.makeText(mContext, R.string.empty_email, Toast.LENGTH_LONG).show();
-                    }
-                } else {
-                    Toast.makeText(mContext, R.string.empty_surname, Toast.LENGTH_LONG).show();
-                }
-            } else {
-                Toast.makeText(mContext,
-                        R.string.empty_name, Toast.LENGTH_LONG)
-                        .show();
-            }
-        } else {
-            Toast.makeText(mContext,
-                    R.string.empty_login, Toast.LENGTH_LONG)
-                    .show();
-        }
+        if (login.isEmpty()) {
+            Toast.makeText(mContext, R.string.empty_login, Toast.LENGTH_LONG).show();
+        } else if (name.isEmpty()) {
+            Toast.makeText(mContext, R.string.empty_name, Toast.LENGTH_LONG).show();
+        } else if (surname.isEmpty()) {
+            Toast.makeText(mContext, R.string.empty_surname, Toast.LENGTH_LONG).show();
+        } else if (email.isEmpty()) {
+            Toast.makeText(mContext, R.string.empty_email, Toast.LENGTH_LONG).show();
+        } else if (!verifyEmail(email)) {
+            Toast.makeText(mContext, R.string.invalid_email, Toast.LENGTH_LONG).show();
+        } else if (password.isEmpty()) {
+            Toast.makeText(mContext, R.string.empty_password, Toast.LENGTH_LONG).show();
+        } else
+            RequestManager.regRequest(mContext, new RegisterData().setLogin(login).setName(name).setSurname(surname).setEmail(email).setPassword(password));
     }
 }

@@ -4,7 +4,7 @@ import com.medvedev.nikita.notes.utils.FluentBuilderMap;
 
 import java.util.Map;
 
-public class LoginPasswordData extends Body {
+public class LoginPasswordData<S extends LoginPasswordData<S>> extends Body {
     private String login;
     private String password;
 
@@ -12,18 +12,18 @@ public class LoginPasswordData extends Body {
         return login;
     }
 
-    public LoginPasswordData setLogin(String login) {
+    public S setLogin(String login) {
         this.login = login;
-        return this;
+        return (S)this;
     }
 
     public String getPassword() {
         return password;
     }
 
-    public LoginPasswordData setPassword(String password) {
+    public S setPassword(String password) {
         this.password = password;
-        return this;
+        return (S) this;
     }
 
     @Override

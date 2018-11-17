@@ -13,6 +13,7 @@ import com.medvedev.nikita.notes.objects.Body;
 import com.medvedev.nikita.notes.objects.LoginPasswordData;
 import com.medvedev.nikita.notes.objects.Notes;
 import com.medvedev.nikita.notes.objects.NotesRequest;
+import com.medvedev.nikita.notes.objects.RegisterData;
 import com.medvedev.nikita.notes.objects.Token;
 
 import java.util.Map;
@@ -29,6 +30,7 @@ public class RequestManager {
     public static final int ERROR = 1;
 
     private static final Map<String, Command> commandMap = new TreeMap<>();
+
     static {
         commandMap.put(REGISTER, new Command(REGISTER, Request.Method.POST));
         commandMap.put(LOGIN, new Command(LOGIN, Request.Method.POST));
@@ -37,44 +39,55 @@ public class RequestManager {
     }
 
     //Другие запросы можно строить по такому же принципу
-    public static void loginRequest(Context mContext, LoginPasswordData body){
+    public static void loginRequest(Context mContext, LoginPasswordData body) {
 
-        doRequest(LOGIN, (l, t)->{
+        doRequest(LOGIN, (l, t) -> {
                     ResponseManager.onLogin(mContext, t.getToken());
-                },(req, errCode)->{
-                    Toast.makeText(mContext, "Ошибка! "+mContext.getResources().getString(ErrorManager.errorToResID(errCode)), Toast.LENGTH_LONG).show();
+                }, (req, errCode) -> {
+                    Toast.makeText(mContext, "Ошибка! " + mContext.getResources().getString(ErrorManager.errorToResID(errCode)), Toast.LENGTH_LONG).show();
                 }, body,
                 Token.class);
     }
-    public static void requestNotes(NotesRequest r, Context context, Consumer<Notes> callback)
-    {
-        doRequest(GET_NOTES, (req, notes)->
+
+    public static void requestNotes(NotesRequest r, Context context, Consumer<Notes> callback) {
+        doRequest(GET_NOTES, (req, notes) ->
         {
             callback.accept(notes);
         }, (req1, errCode) -> {
-            Toast.makeText(context, "Ошибка! "+context.getResources().getString(ErrorManager.errorToResID(errCode)), Toast.LENGTH_LONG).show();
+            Toast.makeText(context, "Ошибка! " + context.getResources().getString(ErrorManager.errorToResID(errCode)), Toast.LENGTH_LONG).show();
         }, r, Notes.class);
     }
+
+    public static void regRequest(Context mContext, RegisterData body) {
+        Log.i("REGISTER_MAP",body.getAsMap().toString());
+        doRequest(REGISTER,
+                (l, t) ->
+                        ResponseManager.checkRegisterResponse(mContext, t.getToken()),
+                (params, error) ->
+                        Toast.makeText(mContext, ErrorManager.errorToResID(error), Toast.LENGTH_LONG).show(),
+                body,
+                Token.class);
+    }
+
     /**
      * Шаблон, на основе которого можно построить конкретные запросы
      *
-     * @param function - Запрашиваемая функция, одна из объявленных в этом классе
+     * @param function  - Запрашиваемая функция, одна из объявленных в этом классе
      * @param onSuccess - Callback, вызываемый, когда приходит ответ со статусом OK
-     * @param onError - Callback, вызываемый, когда приходит ответ со статусом ERROR
-     * @param params - Параметры, передаваемые в запросе
-     * @param clazz - Класс, к которому нужно привести тело ответа (поле body)
-     * @param <E> - Класс, объект которого передается как параметры запроса
-     * @param <T> - см. clazz
+     * @param onError   - Callback, вызываемый, когда приходит ответ со статусом ERROR
+     * @param params    - Параметры, передаваемые в запросе
+     * @param clazz     - Класс, к которому нужно привести тело ответа (поле body)
+     * @param <E>       - Класс, объект которого передается как параметры запроса
+     * @param <T>       - см. clazz
      */
-    private static<E extends Body, T extends Body> void doRequest(String function, BiConsumer<E,T> onSuccess, BiConsumer<E, Integer> onError, E params, Class<T> clazz)
-    {
+    private static <E extends Body, T extends Body> void doRequest(String function, BiConsumer<E, T> onSuccess, BiConsumer<E, Integer> onError, E params, Class<T> clazz) {
         Command c = commandMap.get(function);
         if (c == null)
             return;
-        Log.i("RequestManager", "Request \""+c.getName()+"\" is sending to server...");
+        Log.i("RequestManager", "Request \"" + c.getName() + "\" is sending to server...");
 
         MyRequest request = MyRequest.create(c.getMethod(), server_url + c.getName(),
-                r->{
+                r -> {
                     JSONObject response = JSON.parseObject(r);
                     int code = response.getInteger("status");
                     if (code == OK)
@@ -82,20 +95,21 @@ public class RequestManager {
                     else
                         onError.accept(params, response.getInteger("message"));
                 },
-                e->{
+                e -> {
 
-                },params);
+                }, params);
 
         AppController.getInstance().addToRequestQueue(request, c.getName());
     }
-    private static class MyRequest extends StringRequest
-    {
+
+    private static class MyRequest extends StringRequest {
         private Map<String, String> params = new TreeMap<>();
+
         MyRequest(int method, String url, Response.Listener<String> listener, Response.ErrorListener errorListener) {
             super(method, url, listener, errorListener);
         }
-        <E extends Body> MyRequest setBody(E body)
-        {
+
+        <E extends Body> MyRequest setBody(E body) {
             this.params = body.getAsMap();
             return this;
         }
@@ -105,16 +119,15 @@ public class RequestManager {
 
             return params;
         }
-        public static MyRequest create(int method, String url, Response.Listener<String> listener, Response.ErrorListener errorListener, Body params)
-        {
+
+        public static MyRequest create(int method, String url, Response.Listener<String> listener, Response.ErrorListener errorListener, Body params) {
 
             if (method != Method.GET)
                 return new MyRequest(method, url, listener, errorListener).setBody(params);
 
             StringBuilder stringParameters = new StringBuilder("?");
             Set<Map.Entry<String, String>> entries = params.getAsMap().entrySet();
-            for(Map.Entry<String, String> entry: entries)
-            {
+            for (Map.Entry<String, String> entry : entries) {
                 stringParameters.append(entry.getKey());
                 stringParameters.append("=");
                 stringParameters.append(entry.getValue());
@@ -126,9 +139,11 @@ public class RequestManager {
             return new MyRequest(method, url, listener, errorListener);
         }
     }
+
     public interface BiConsumer<T, U> {
         void accept(T var1, U var2);
     }
+
     public interface Consumer<T> {
         void accept(T var1);
     }

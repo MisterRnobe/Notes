@@ -12,8 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:name=".utils.AppController">
-        <activity android:name=".LoginActivity"
-            android:label="@string/title_login">
+        <activity android:name=".LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
