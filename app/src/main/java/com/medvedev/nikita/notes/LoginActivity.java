@@ -39,20 +39,20 @@ public class LoginActivity extends AppCompatActivity {
         }
         reg_link.setOnClickListener(v -> {
             Log.i(TAG, "Redirecting to register activity");
-            //рег астивити
+            Intent intent = new Intent(mContext, RegisterActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_TASK_ON_HOME);
+            startActivity(intent);
+            finish();
         });
         b.setOnClickListener(v -> {
             String loginText = login.getText().toString().trim();
             String passwordText = password.getText().toString().trim();
-            if (!loginText.isEmpty()) {
-                if (!passwordText.isEmpty()) {
-                    RequestManager.loginRequest(mContext, new LoginPasswordData().setLogin(loginText).setPassword(passwordText));
-                } else {
-                    Toast.makeText(getApplicationContext(), R.string.empty_password, Toast.LENGTH_LONG).show();
-                }
-            } else {
+            if (loginText.isEmpty()) {
                 Toast.makeText(getApplicationContext(), R.string.empty_login, Toast.LENGTH_LONG).show();
-            }
+            } else if (passwordText.isEmpty()) {
+                Toast.makeText(getApplicationContext(), R.string.empty_password, Toast.LENGTH_LONG).show();
+            } else
+                RequestManager.loginRequest(mContext, new LoginPasswordData().setLogin(loginText).setPassword(passwordText));
         });
     }
 
