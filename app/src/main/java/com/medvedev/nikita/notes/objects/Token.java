@@ -4,16 +4,16 @@ import com.medvedev.nikita.notes.utils.FluentBuilderMap;
 
 import java.util.Map;
 
-public class Token extends Body {
+public class Token<S extends Token<S>> extends Body {
     private String token;
 
     public String getToken() {
         return token;
     }
 
-    public Token setToken(String token) {
+    public S setToken(String token) {
         this.token = token;
-        return this;
+        return (S)this;
     }
 
     @Override

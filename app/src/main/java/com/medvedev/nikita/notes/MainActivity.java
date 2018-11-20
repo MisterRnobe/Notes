@@ -30,9 +30,7 @@ public class MainActivity extends AppCompatActivity {
         FloatingActionButton fab = findViewById(R.id.fab);
         textView = findViewById(R.id.ouputText);
 
-        NotesRequest r = new NotesRequest().setCount(20).setOffset(0);
-        r.setToken(Tokenizer.token);
-        RequestManager.requestNotes(r,this, this::onGetNotes);
+        RequestManager.requestNotes(new NotesRequest().setCount(20).setOffset(0).setToken(Tokenizer.token),this, this::onGetNotes);
 
         fab.setOnClickListener(view -> logoutUser());
     }

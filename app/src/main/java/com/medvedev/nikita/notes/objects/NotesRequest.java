@@ -4,7 +4,7 @@ import com.medvedev.nikita.notes.utils.FluentBuilderMap;
 
 import java.util.Map;
 
-public class NotesRequest extends Token {
+public class NotesRequest extends Token<NotesRequest> {
     private int count;
     private int offset;
 
