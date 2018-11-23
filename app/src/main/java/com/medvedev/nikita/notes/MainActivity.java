@@ -10,9 +10,10 @@ import android.widget.TextView;
 import com.medvedev.nikita.notes.objects.Note;
 import com.medvedev.nikita.notes.objects.Notes;
 import com.medvedev.nikita.notes.objects.NotesRequest;
+import com.medvedev.nikita.notes.objects.Token;
 import com.medvedev.nikita.notes.utils.RequestManager;
 import com.medvedev.nikita.notes.utils.SessionManager;
-import com.medvedev.nikita.notes.utils.Tokenizer;
+import com.medvedev.nikita.notes.utils.SharedPreferencesManager;
 
 import java.util.List;
 
@@ -28,9 +29,9 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         FloatingActionButton fab = findViewById(R.id.fab);
-        textView = findViewById(R.id.ouputText);
-
-        RequestManager.requestNotes(new NotesRequest().setCount(20).setOffset(0).setToken(Tokenizer.token),this, this::onGetNotes);
+        textView = findViewById(R.id.outputText);
+        Token token = new Token().setToken(SharedPreferencesManager.getInstance().getToken());
+        RequestManager.requestNotes(new NotesRequest().setCount(20).setOffset(0).setToken(token.getToken()),this, this::onGetNotes);
 
         fab.setOnClickListener(view -> logoutUser());
     }
@@ -59,6 +60,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void logoutUser() {
         session.setLogin(false);
+        SharedPreferencesManager sp = SharedPreferencesManager.getInstance();
+        sp.clearUserPreferences();
         Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
         finish();

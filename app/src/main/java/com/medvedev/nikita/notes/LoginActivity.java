@@ -12,8 +12,10 @@ import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONObject;
 import com.medvedev.nikita.notes.objects.LoginPasswordData;
+import com.medvedev.nikita.notes.objects.Token;
 import com.medvedev.nikita.notes.utils.RequestManager;
 import com.medvedev.nikita.notes.utils.SessionManager;
+import com.medvedev.nikita.notes.utils.SharedPreferencesManager;
 
 public class LoginActivity extends AppCompatActivity {
     private EditText password, login;
@@ -24,8 +26,8 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        RequestManager.tokenRequest(mContext);
         setContentView(R.layout.activity_login);
+        RequestManager.tokenRequest(mContext, new Token().setToken(SharedPreferencesManager.getInstance().getToken()));
         Log.i(TAG, "Called onCreate(...)");
         password = findViewById(R.id.passwordInput);
         login = findViewById(R.id.loginInput);
