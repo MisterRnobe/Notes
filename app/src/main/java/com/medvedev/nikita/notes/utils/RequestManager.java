@@ -27,8 +27,7 @@ public class RequestManager {
     public static final String LOGIN = "login";
     public static final String ADD_NOTE = "add_note";
     public static final String GET_NOTES = "get_notes";
-    //TODO: вставить имя функции
-    public static final String TOKEN_LOGIN = "";
+    public static final String TOKEN_LOGIN = "update_token";
     public static final int OK = 0;
     public static final int ERROR = 1;
 
@@ -39,6 +38,7 @@ public class RequestManager {
         commandMap.put(LOGIN, new Command(LOGIN, Request.Method.POST));
         commandMap.put(ADD_NOTE, new Command(ADD_NOTE, Request.Method.POST));
         commandMap.put(GET_NOTES, new Command(GET_NOTES, Request.Method.GET));
+        commandMap.put(TOKEN_LOGIN, new Command(TOKEN_LOGIN,Request.Method.POST));
     }
 
     //Другие запросы можно строить по такому же принципу
@@ -63,13 +63,13 @@ public class RequestManager {
     Если токен верный, сервер вернет новый токен и откроет MainActivity
     Если токен неверный, оставит на логин активити */
 
-    public static void tokenRequest(Context mContext){
+    public static void tokenRequest(Context mContext, Token body){
         doRequest(TOKEN_LOGIN,
                 (l,t)->
                         ResponseManager.onLogin(mContext, t.getToken()),
                 (params,error)->
                         Log.e("Token Request",mContext.getResources().getString(ErrorManager.errorToResID(error))),
-                new Token().setToken(SharedPreferencesManager.getInstance().getToken()),
+                body,
                 Token.class);
     }
     public static void regRequest(Context mContext, RegisterData body) {
@@ -109,7 +109,7 @@ public class RequestManager {
                         onError.accept(params, response.getInteger("message"));
                 },
                 e -> {
-
+                    Log.e("Request Error",e.getMessage());
                 }, params);
 
         AppController.getInstance().addToRequestQueue(request, c.getName());
