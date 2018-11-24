@@ -42,9 +42,11 @@ public class RequestManager {
     }
 
     //Другие запросы можно строить по такому же принципу
-    public static void loginRequest(Context mContext, LoginPasswordData body) {
+    public static void loginRequest(Context mContext, LoginPasswordData body, Consumer<String> callback) {
 
-        doRequest(LOGIN, (l, t) -> ResponseManager.onLogin(mContext, t.getToken()), (req, errCode) -> {
+        doRequest(LOGIN, (l, t) ->
+                        callback.accept(t.getToken()),
+                        (req, errCode) -> {
                     Toast.makeText(mContext, "Ошибка! " + mContext.getResources().getString(ErrorManager.errorToResID(errCode)), Toast.LENGTH_LONG).show();
                 }, body,
                 Token.class);
@@ -63,19 +65,19 @@ public class RequestManager {
     Если токен верный, сервер вернет новый токен и откроет MainActivity
     Если токен неверный, оставит на логин активити */
 
-    public static void tokenRequest(Context mContext, Token body){
+    public static void tokenRequest(Context mContext, Token body, Consumer<String> callback){
         doRequest(TOKEN_LOGIN,
                 (l,t)->
-                        ResponseManager.onLogin(mContext, t.getToken()),
+                        callback.accept(t.getToken()),
                 (params,error)->
                         Log.e("Token Request",mContext.getResources().getString(ErrorManager.errorToResID(error))),
                 body,
                 Token.class);
     }
-    public static void regRequest(Context mContext, RegisterData body) {
+    public static void regRequest(Context mContext, RegisterData body,Consumer<String> callback) {
         doRequest(REGISTER,
                 (l, t) ->
-                        ResponseManager.checkRegisterResponse(mContext, t.getToken()),
+                       callback.accept(t.getToken()),
                 (params, error) ->
                         Toast.makeText(mContext, ErrorManager.errorToResID(error), Toast.LENGTH_LONG).show(),
                 body,

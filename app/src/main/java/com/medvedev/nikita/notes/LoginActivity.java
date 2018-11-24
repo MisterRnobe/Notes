@@ -27,7 +27,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        RequestManager.tokenRequest(mContext, new Token().setToken(SharedPreferencesManager.getInstance().getToken()));
+        RequestManager.tokenRequest(mContext, new Token().setToken(SharedPreferencesManager.getInstance().getToken()),this::onLogin);
         Log.i(TAG, "Called onCreate(...)");
         password = findViewById(R.id.passwordInput);
         login = findViewById(R.id.loginInput);
@@ -55,10 +55,22 @@ public class LoginActivity extends AppCompatActivity {
             } else if (passwordText.isEmpty()) {
                 Toast.makeText(getApplicationContext(), R.string.empty_password, Toast.LENGTH_LONG).show();
             } else
-                RequestManager.loginRequest(mContext, new LoginPasswordData().setLogin(loginText).setPassword(passwordText));
+                RequestManager.loginRequest(mContext, new LoginPasswordData().setLogin(loginText).setPassword(passwordText),this::onLogin);
         });
     }
 
+    protected void onLogin(String token)
+    {
+        SessionManager session = new SessionManager(mContext);
+        session.setLogin(true);
+        SharedPreferencesManager sharedPreferencesManager = SharedPreferencesManager.getInstance();
+        sharedPreferencesManager.clearUserPreferences();
+        sharedPreferencesManager.insertUserPreferences(token);
+        Intent intent = new Intent(mContext, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_TASK_ON_HOME);
+        mContext.startActivity(intent);
+        finish();
+    }
 
     @Override
     protected void onDestroy() {

@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.medvedev.nikita.notes.objects.RegisterData;
 import com.medvedev.nikita.notes.utils.RequestManager;
 import com.medvedev.nikita.notes.utils.SessionManager;
+import com.medvedev.nikita.notes.utils.SharedPreferencesManager;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -101,6 +102,18 @@ public class RegisterActivity extends AppCompatActivity {
         } else if (password.isEmpty()) {
             Toast.makeText(mContext, R.string.empty_password, Toast.LENGTH_LONG).show();
         } else
-            RequestManager.regRequest(mContext, new RegisterData().setLogin(login).setName(name).setSurname(surname).setEmail(email).setPassword(password));
+            RequestManager.regRequest(mContext, new RegisterData().setLogin(login).setName(name).setSurname(surname).setEmail(email).setPassword(password),this::onRegister);
+    }
+    protected void onRegister(String token) {
+        Toast.makeText(mContext, R.string.success_register, Toast.LENGTH_LONG).show();
+        SessionManager session = new SessionManager(mContext);
+        session.setLogin(true);
+        SharedPreferencesManager sharedPreferencesManager = SharedPreferencesManager.getInstance();
+        sharedPreferencesManager.clearUserPreferences();
+        sharedPreferencesManager.insertUserPreferences(token);
+        Intent intent = new Intent(mContext,
+                MainActivity.class);
+        mContext.startActivity(intent);
+        finish();
     }
 }
