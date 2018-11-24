@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,12 +23,16 @@ public class LoginActivity extends AppCompatActivity {
     public static final String TAG = LoginActivity.class.getCanonicalName();
     private SessionManager session;
     private final Context mContext = this;
+    private ProgressBar pb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        pb = findViewById(R.id.progressbar);
+        pb.setVisibility(ProgressBar.VISIBLE);
         RequestManager.tokenRequest(mContext, new Token().setToken(SharedPreferencesManager.getInstance().getToken()),this::onLogin);
+
         Log.i(TAG, "Called onCreate(...)");
         password = findViewById(R.id.passwordInput);
         login = findViewById(R.id.loginInput);
@@ -54,8 +59,10 @@ public class LoginActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), R.string.empty_login, Toast.LENGTH_LONG).show();
             } else if (passwordText.isEmpty()) {
                 Toast.makeText(getApplicationContext(), R.string.empty_password, Toast.LENGTH_LONG).show();
-            } else
-                RequestManager.loginRequest(mContext, new LoginPasswordData().setLogin(loginText).setPassword(passwordText),this::onLogin);
+            } else {
+                pb.setVisibility(ProgressBar.VISIBLE);
+                RequestManager.loginRequest(mContext, new LoginPasswordData().setLogin(loginText).setPassword(passwordText), this::onLogin);
+            }
         });
     }
 
@@ -69,6 +76,8 @@ public class LoginActivity extends AppCompatActivity {
         Intent intent = new Intent(mContext, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_TASK_ON_HOME);
         mContext.startActivity(intent);
+        pb = findViewById(R.id.progressbar);
+        pb.setVisibility(ProgressBar.INVISIBLE);
         finish();
     }
 

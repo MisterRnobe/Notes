@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,6 +34,7 @@ public class RegisterActivity extends AppCompatActivity {
     private SessionManager session;
     private Context mContext = this;
     private CheckBox checkBox;
+    private ProgressBar pb;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -101,8 +103,11 @@ public class RegisterActivity extends AppCompatActivity {
             Toast.makeText(mContext, R.string.invalid_email, Toast.LENGTH_LONG).show();
         } else if (password.isEmpty()) {
             Toast.makeText(mContext, R.string.empty_password, Toast.LENGTH_LONG).show();
-        } else
+        } else{
+            pb = findViewById(R.id.progressbar);
+            pb.setVisibility(ProgressBar.VISIBLE);
             RequestManager.regRequest(mContext, new RegisterData().setLogin(login).setName(name).setSurname(surname).setEmail(email).setPassword(password),this::onRegister);
+        }
     }
     protected void onRegister(String token) {
         Toast.makeText(mContext, R.string.success_register, Toast.LENGTH_LONG).show();
@@ -114,6 +119,8 @@ public class RegisterActivity extends AppCompatActivity {
         Intent intent = new Intent(mContext,
                 MainActivity.class);
         mContext.startActivity(intent);
+        pb = findViewById(R.id.progressbar);
+        pb.setVisibility(ProgressBar.INVISIBLE);
         finish();
     }
 }

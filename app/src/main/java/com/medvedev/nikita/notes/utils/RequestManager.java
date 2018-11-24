@@ -1,7 +1,9 @@
 package com.medvedev.nikita.notes.utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
@@ -10,6 +12,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.toolbox.StringRequest;
 import com.medvedev.nikita.notes.MainActivity;
+import com.medvedev.nikita.notes.R;
 import com.medvedev.nikita.notes.objects.Body;
 import com.medvedev.nikita.notes.objects.LoginPasswordData;
 import com.medvedev.nikita.notes.objects.Notes;
@@ -38,7 +41,7 @@ public class RequestManager {
         commandMap.put(LOGIN, new Command(LOGIN, Request.Method.POST));
         commandMap.put(ADD_NOTE, new Command(ADD_NOTE, Request.Method.POST));
         commandMap.put(GET_NOTES, new Command(GET_NOTES, Request.Method.GET));
-        commandMap.put(TOKEN_LOGIN, new Command(TOKEN_LOGIN,Request.Method.POST));
+        commandMap.put(TOKEN_LOGIN, new Command(TOKEN_LOGIN, Request.Method.POST));
     }
 
     //Другие запросы можно строить по такому же принципу
@@ -46,7 +49,8 @@ public class RequestManager {
 
         doRequest(LOGIN, (l, t) ->
                         callback.accept(t.getToken()),
-                        (req, errCode) -> {
+                (req, errCode) -> {
+                    ((Activity)mContext).findViewById(R.id.progressbar).setVisibility(View.INVISIBLE);
                     Toast.makeText(mContext, "Ошибка! " + mContext.getResources().getString(ErrorManager.errorToResID(errCode)), Toast.LENGTH_LONG).show();
                 }, body,
                 Token.class);
@@ -57,29 +61,37 @@ public class RequestManager {
         {
             callback.accept(notes);
         }, (req1, errCode) -> {
+            ((Activity)context).findViewById(R.id.progressbar).setVisibility(View.INVISIBLE);
             Toast.makeText(context, "Ошибка! " + context.getResources().getString(ErrorManager.errorToResID(errCode)), Toast.LENGTH_LONG).show();
         }, r, Notes.class);
     }
-  /**
-   * Запрос, осуществляющий авторизацию при помощи токена
-    Если токен верный, сервер вернет новый токен и откроет MainActivity
-    Если токен неверный, оставит на логин активити */
 
-    public static void tokenRequest(Context mContext, Token body, Consumer<String> callback){
+    /**
+     * Запрос, осуществляющий авторизацию при помощи токена
+     * Если токен верный, сервер вернет новый токен и откроет MainActivity
+     * Если токен неверный, оставит на логин активити
+     */
+
+    public static void tokenRequest(Context mContext, Token body, Consumer<String> callback) {
         doRequest(TOKEN_LOGIN,
-                (l,t)->
+                (l, t) ->
                         callback.accept(t.getToken()),
-                (params,error)->
-                        Log.e("Token Request",mContext.getResources().getString(ErrorManager.errorToResID(error))),
+                (params, error) -> {
+                    ((Activity) mContext).findViewById(R.id.progressbar).setVisibility(View.INVISIBLE);
+                    Log.e("Token Request", mContext.getResources().getString(ErrorManager.errorToResID(error)));
+                },
                 body,
                 Token.class);
     }
-    public static void regRequest(Context mContext, RegisterData body,Consumer<String> callback) {
+
+    public static void regRequest(Context mContext, RegisterData body, Consumer<String> callback) {
         doRequest(REGISTER,
                 (l, t) ->
-                       callback.accept(t.getToken()),
-                (params, error) ->
-                        Toast.makeText(mContext, ErrorManager.errorToResID(error), Toast.LENGTH_LONG).show(),
+                        callback.accept(t.getToken()),
+                (params, error) -> {
+                    ((Activity) mContext).findViewById(R.id.progressbar).setVisibility(View.INVISIBLE);
+                    Toast.makeText(mContext, ErrorManager.errorToResID(error), Toast.LENGTH_LONG).show();
+                },
                 body,
                 Token.class);
     }
@@ -107,11 +119,12 @@ public class RequestManager {
                     int code = response.getInteger("status");
                     if (code == OK)
                         onSuccess.accept(params, response.getJSONObject("body").toJavaObject(clazz));
-                    else
+                    else {
                         onError.accept(params, response.getInteger("message"));
+                    }
                 },
                 e -> {
-                    Log.e("Request Error",e.getMessage());
+                    Log.e("Request Error", e.getMessage());
                 }, params);
 
         AppController.getInstance().addToRequestQueue(request, c.getName());
