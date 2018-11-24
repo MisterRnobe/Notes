@@ -1,10 +1,12 @@
 package com.medvedev.nikita.notes;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.medvedev.nikita.notes.objects.Note;
@@ -20,6 +22,8 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     private SessionManager session;
     private TextView textView;
+    private ProgressBar pb;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,21 +31,19 @@ public class MainActivity extends AppCompatActivity {
         session = new SessionManager(this);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
         FloatingActionButton fab = findViewById(R.id.fab);
         textView = findViewById(R.id.outputText);
         Token token = new Token().setToken(SharedPreferencesManager.getInstance().getToken());
-        RequestManager.requestNotes(new NotesRequest().setCount(20).setOffset(0).setToken(token.getToken()),this, this::onGetNotes);
-
+        RequestManager.requestNotes(new NotesRequest().setCount(20).setOffset(0).setToken(token.getToken()), this, this::onGetNotes);
+        pb = findViewById(R.id.progressbar);
+        pb.setVisibility(ProgressBar.VISIBLE);
         fab.setOnClickListener(view -> logoutUser());
     }
 
-    protected void onGetNotes(Notes notes)
-    {
+    protected void onGetNotes(Notes notes) {
         List<Note> noteList = notes.getNotes();
         StringBuilder text = new StringBuilder();
-        for (Note n: noteList)
-        {
+        for (Note n : noteList) {
             text.append("Title: ");
             text.append(n.getTitle());
             text.append('\n');
@@ -50,6 +52,8 @@ public class MainActivity extends AppCompatActivity {
             text.append('\n');
         }
         textView.setText(text.toString());
+        pb = findViewById(R.id.progressbar);
+        pb.setVisibility(ProgressBar.INVISIBLE);
     }
 
     @Override
