@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.medvedev.nikita.notes.objects.RegisterData;
+import com.medvedev.nikita.notes.utils.ErrorManager;
 import com.medvedev.nikita.notes.utils.RequestManager;
 import com.medvedev.nikita.notes.utils.SessionManager;
 import com.medvedev.nikita.notes.utils.SharedPreferencesManager;
@@ -106,7 +107,7 @@ public class RegisterActivity extends AppCompatActivity {
         } else{
             pb = findViewById(R.id.progressbar);
             pb.setVisibility(ProgressBar.VISIBLE);
-            RequestManager.regRequest(mContext, new RegisterData().setLogin(login).setName(name).setSurname(surname).setEmail(email).setPassword(password),this::onRegister);
+            RequestManager.regRequest(new RegisterData().setLogin(login).setName(name).setSurname(surname).setEmail(email).setPassword(password),this::onRegister,this::registerError);
         }
     }
     protected void onRegister(String token) {
@@ -122,5 +123,10 @@ public class RegisterActivity extends AppCompatActivity {
         pb = findViewById(R.id.progressbar);
         pb.setVisibility(ProgressBar.INVISIBLE);
         finish();
+    }
+    protected void registerError(int errCode){
+        pb = findViewById(R.id.progressbar);
+        pb.setVisibility(ProgressBar.INVISIBLE);
+        Toast.makeText(mContext, ErrorManager.errorToResID(errCode), Toast.LENGTH_LONG).show();
     }
 }

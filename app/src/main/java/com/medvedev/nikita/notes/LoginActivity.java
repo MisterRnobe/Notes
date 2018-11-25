@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.medvedev.nikita.notes.objects.LoginPasswordData;
 import com.medvedev.nikita.notes.objects.Token;
+import com.medvedev.nikita.notes.utils.ErrorManager;
 import com.medvedev.nikita.notes.utils.RequestManager;
 import com.medvedev.nikita.notes.utils.SessionManager;
 import com.medvedev.nikita.notes.utils.SharedPreferencesManager;
@@ -30,7 +31,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         pb = findViewById(R.id.progressbar);
         pb.setVisibility(ProgressBar.VISIBLE);
-        RequestManager.tokenRequest(mContext, new Token().setToken(SharedPreferencesManager.getInstance().getToken()),this::onLogin);
+        RequestManager.tokenRequest(new Token().setToken(SharedPreferencesManager.getInstance().getToken()),this::onLogin,this::tokenAuthError);
 
         Log.i(TAG, "Called onCreate(...)");
         password = findViewById(R.id.passwordInput);
@@ -60,7 +61,7 @@ public class LoginActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), R.string.empty_password, Toast.LENGTH_LONG).show();
             } else {
                 pb.setVisibility(ProgressBar.VISIBLE);
-                RequestManager.loginRequest(mContext, new LoginPasswordData().setLogin(loginText).setPassword(passwordText), this::onLogin);
+                RequestManager.loginRequest(new LoginPasswordData().setLogin(loginText).setPassword(passwordText), this::onLogin,this::loginError);
             }
         });
     }
@@ -78,6 +79,16 @@ public class LoginActivity extends AppCompatActivity {
         pb = findViewById(R.id.progressbar);
         pb.setVisibility(ProgressBar.INVISIBLE);
         finish();
+    }
+    protected void loginError(int errCode){
+        pb = findViewById(R.id.progressbar);
+        pb.setVisibility(ProgressBar.INVISIBLE);
+        Toast.makeText(mContext, ErrorManager.errorToResID(errCode), Toast.LENGTH_LONG).show();
+    }
+    protected void tokenAuthError(int errCode){
+        pb = findViewById(R.id.progressbar);
+        pb.setVisibility(ProgressBar.INVISIBLE);
+        Log.i(TAG,getResources().getString(ErrorManager.errorToResID(errCode)));
     }
 
     @Override

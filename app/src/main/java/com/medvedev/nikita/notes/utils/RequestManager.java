@@ -1,18 +1,12 @@
 package com.medvedev.nikita.notes.utils;
 
-import android.app.Activity;
-import android.content.Context;
 import android.util.Log;
-import android.view.View;
-import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.toolbox.StringRequest;
-import com.medvedev.nikita.notes.MainActivity;
-import com.medvedev.nikita.notes.R;
 import com.medvedev.nikita.notes.objects.Body;
 import com.medvedev.nikita.notes.objects.LoginPasswordData;
 import com.medvedev.nikita.notes.objects.Note;
@@ -46,39 +40,34 @@ public class RequestManager {
     }
 
     //Другие запросы можно строить по такому же принципу
-    public static void loginRequest(Context mContext, LoginPasswordData body, Consumer<String> callback) {
+    public static void loginRequest(LoginPasswordData body, Consumer<String> onSuccess, Consumer<Integer> onError) {
 
-        doRequest(LOGIN, (l, t) ->
-                        callback.accept(t.getToken()),
-                (req, errCode) -> {
-                    ((Activity)mContext).findViewById(R.id.progressbar).setVisibility(View.INVISIBLE);
-                    Toast.makeText(mContext, "Ошибка! " + mContext.getResources().getString(ErrorManager.errorToResID(errCode)), Toast.LENGTH_LONG).show();
-                }, body,
+        doRequest(LOGIN,
+                (l, t) -> onSuccess.accept(t.getToken()),
+                (req, errCode) -> onError.accept(errCode),
+                body,
                 Token.class);
     }
-    public static void addNoteRequest(Context context, String title, String note, Consumer<Note> callback)
-    {
-        doRequest(ADD_NOTE, (reqNote, respNote)->
-                {
-                    callback.accept(new Note()
-                            .setCreated(respNote.getCreated())
-                            .setId(respNote.getId())
-                            .setNote(reqNote.getNote())
-                            .setTitle(respNote.getTitle()));
-                }, (n,errCode)->{
-                    context
-                },
-                new Note().setNote(note).setTitle(title), Note.class);
+
+    public static void addNoteRequest(String title, String note, Consumer<Note> onSuccess, Consumer<Integer> onError) {
+        doRequest(ADD_NOTE,
+                (reqNote, respNote) ->
+                        onSuccess.accept(new Note()
+                                .setCreated(respNote.getCreated())
+                                .setId(respNote.getId())
+                                .setNote(reqNote.getNote())
+                                .setTitle(respNote.getTitle())),
+                (n, errCode) -> onError.accept(errCode),
+                new Note().setNote(note).setTitle(title),
+                Note.class);
     }
 
-    public static void requestNotes(NotesRequest r, Context context, Consumer<Notes> callback) {
-        doRequest(GET_NOTES, (req, notes) ->
-        {
-            callback.accept(notes);
-        }, (req1, errCode) -> {
-            ((Activity)context).findViewById(R.id.progressbar).setVisibility(View.INVISIBLE);
-            Toast.makeText(context, "Ошибка! " + context.getResources().getString(ErrorManager.errorToResID(errCode)), Toast.LENGTH_LONG).show();
-        }, r, Notes.class);
+    public static void requestNotes(NotesRequest r, Consumer<Notes> onSuccess, Consumer<Integer> onError) {
+        doRequest(GET_NOTES,
+                (req, notes) -> onSuccess.accept(notes),
+                (req1, errCode) -> onError.accept(errCode),
+                r,
+                Notes.class);
     }
 
     /**
@@ -87,26 +76,18 @@ public class RequestManager {
      * Если токен неверный, оставит на логин активити
      */
 
-    public static void tokenRequest(Context mContext, Token body, Consumer<String> callback) {
+    public static void tokenRequest(Token body, Consumer<String> onSuccess, Consumer<Integer> onError) {
         doRequest(TOKEN_LOGIN,
-                (l, t) ->
-                        callback.accept(t.getToken()),
-                (params, error) -> {
-                    ((Activity) mContext).findViewById(R.id.progressbar).setVisibility(View.INVISIBLE);
-                    Log.e("Token Request", mContext.getResources().getString(ErrorManager.errorToResID(error)));
-                },
+                (l, t) -> onSuccess.accept(t.getToken()),
+                (params, errCode) -> onError.accept(errCode),
                 body,
                 Token.class);
     }
 
-    public static void regRequest(Context mContext, RegisterData body, Consumer<String> callback) {
+    public static void regRequest(RegisterData body, Consumer<String> onSuccess,Consumer<Integer> onError) {
         doRequest(REGISTER,
-                (l, t) ->
-                        callback.accept(t.getToken()),
-                (params, error) -> {
-                    ((Activity) mContext).findViewById(R.id.progressbar).setVisibility(View.INVISIBLE);
-                    Toast.makeText(mContext, ErrorManager.errorToResID(error), Toast.LENGTH_LONG).show();
-                },
+                (l, t) -> onSuccess.accept(t.getToken()),
+                (params, errCode) -> onError.accept(errCode),
                 body,
                 Token.class);
     }
