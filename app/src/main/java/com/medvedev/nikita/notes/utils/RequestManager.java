@@ -15,6 +15,7 @@ import com.medvedev.nikita.notes.MainActivity;
 import com.medvedev.nikita.notes.R;
 import com.medvedev.nikita.notes.objects.Body;
 import com.medvedev.nikita.notes.objects.LoginPasswordData;
+import com.medvedev.nikita.notes.objects.Note;
 import com.medvedev.nikita.notes.objects.Notes;
 import com.medvedev.nikita.notes.objects.NotesRequest;
 import com.medvedev.nikita.notes.objects.RegisterData;
@@ -54,6 +55,20 @@ public class RequestManager {
                     Toast.makeText(mContext, "Ошибка! " + mContext.getResources().getString(ErrorManager.errorToResID(errCode)), Toast.LENGTH_LONG).show();
                 }, body,
                 Token.class);
+    }
+    public static void addNoteRequest(Context context, String title, String note, Consumer<Note> callback)
+    {
+        doRequest(ADD_NOTE, (reqNote, respNote)->
+                {
+                    callback.accept(new Note()
+                            .setCreated(respNote.getCreated())
+                            .setId(respNote.getId())
+                            .setNote(reqNote.getNote())
+                            .setTitle(respNote.getTitle()));
+                }, (n,errCode)->{
+                    context
+                },
+                new Note().setNote(note).setTitle(title), Note.class);
     }
 
     public static void requestNotes(NotesRequest r, Context context, Consumer<Notes> callback) {

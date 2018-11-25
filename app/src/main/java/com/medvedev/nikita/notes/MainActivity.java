@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -37,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
         RequestManager.requestNotes(new NotesRequest().setCount(20).setOffset(0).setToken(token.getToken()), this, this::onGetNotes);
         pb = findViewById(R.id.progressbar);
         pb.setVisibility(ProgressBar.VISIBLE);
-        fab.setOnClickListener(view -> logoutUser());
+        fab.setOnClickListener(this::openNewNoteActivity);//(view -> logoutUser());
     }
 
     protected void onGetNotes(Notes notes) {
@@ -69,6 +70,12 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
         finish();
+    }
+    private void openNewNoteActivity(View v)
+    {
+        Intent intent = new Intent(this, NewNoteActivity.class);
+        startActivity(intent);
+        //finish();
     }
 
 }

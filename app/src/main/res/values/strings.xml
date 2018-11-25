@@ -40,5 +40,7 @@
     <string name="internal_error">Internal error</string>
     <string name="empty_body">Empty body</string>
     <string name="wrong_function">Wrong function</string>
+    <string name="add_note_title">Title:</string>
+    <string name="add_note_text">Text:</string>
 
 </resources>

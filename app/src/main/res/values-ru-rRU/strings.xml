@@ -40,4 +40,6 @@
     <string name="empty_body">Пустое тело запроса</string>
     <string name="wrong_function">Неверная функция</string>
     <string name="short_password">Пароль слишком короткий</string>
+    <string name="add_note_title">Название:</string>
+    <string name="add_note_text">Текст:</string>
 </resources>
