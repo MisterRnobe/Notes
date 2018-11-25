@@ -32,7 +32,6 @@ public class LoginActivity extends AppCompatActivity {
         pb = findViewById(R.id.progressbar);
         pb.setVisibility(ProgressBar.VISIBLE);
         RequestManager.tokenRequest(new Token().setToken(SharedPreferencesManager.getInstance().getToken()),this::onLogin,this::tokenAuthError);
-
         Log.i(TAG, "Called onCreate(...)");
         password = findViewById(R.id.passwordInput);
         login = findViewById(R.id.loginInput);
