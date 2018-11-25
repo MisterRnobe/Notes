@@ -1,10 +1,11 @@
 package com.medvedev.nikita.notes.objects;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public class Notes extends Body {
-    private List<Note> notes;
+    private List<Note> notes = new ArrayList<>();
 
     public List<Note> getNotes() {
         return notes;
