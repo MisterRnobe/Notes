@@ -8,6 +8,16 @@ public class Note extends Body {
     private String title, note;
     private int id;
     private long created;
+    private String token;
+
+    public String getToken() {
+        return token;
+    }
+
+    public Note setToken(String token) {
+        this.token = token;
+        return this;
+    }
 
     public String getTitle() {
         return title;
@@ -51,6 +61,7 @@ public class Note extends Body {
                 .putFluent("title", title)
                 .putFluent("note", note)
                 .putFluent("created", created)
-                .putFluent("id", id);
+                .putFluent("id", id)
+                .putFluent("token", token);
     }
 }
