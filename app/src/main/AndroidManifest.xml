@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.medvedev.nikita.notes">
 
-    <uses-permission android:name="android.permission.INTERNET"></uses-permission>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:name=".utils.AppController"
@@ -21,12 +21,16 @@
         </activity>
         <activity
             android:name=".RegisterActivity"
-            android:label="@string/title_register"></activity>
+            android:label="@string/title_register" />
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_main"
             android:theme="@style/AppTheme" />
-        <activity android:name=".NewNoteActivity"></activity>
+        <activity android:name=".NewNoteActivity" />
+        <activity
+            android:name=".NoteActivity"
+            android:label="@string/title_activity_note"
+            android:theme="@style/AppTheme"></activity>
     </application>
 
 </manifest>
