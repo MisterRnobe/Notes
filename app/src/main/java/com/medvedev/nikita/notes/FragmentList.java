@@ -30,8 +30,8 @@ public class FragmentList extends ListFragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        Token token = new Token().setToken(SharedPreferencesManager.getInstance().getToken());
-        RequestManager.requestNotes(new NotesRequest().setCount(20).setOffset(0).setToken(token.getToken()), this::onGetNotes,this::onRequestNotesError);
+//        Token token = new Token().setToken(SharedPreferencesManager.getInstance().getToken());
+//        RequestManager.requestNotes(new NotesRequest().setCount(20).setOffset(0).setToken(token.getToken()), this::onGetNotes,this::onRequestNotesError);
     }
 
     protected void onRequestNotesError(int errCode){

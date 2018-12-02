@@ -23,16 +23,16 @@
             style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:indeterminate="true"
-            android:max="100"
-            android:background="@android:color/white"
             android:layout_below="@+id/toolbar"
             android:layout_marginTop="-7dp"
-            android:visibility="invisible"/>
+            android:background="@android:color/white"
+            android:indeterminate="true"
+            android:max="100"
+            android:visibility="invisible" />
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_main" />
+    <include layout="@layout/content_main" android:id="@+id/include"/>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
