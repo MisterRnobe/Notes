@@ -11,17 +11,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.medvedev.nikita.notes.objects.Note;
-import com.medvedev.nikita.notes.objects.Notes;
-import com.medvedev.nikita.notes.objects.NotesRequest;
-import com.medvedev.nikita.notes.objects.Token;
 import com.medvedev.nikita.notes.utils.ErrorManager;
-import com.medvedev.nikita.notes.utils.NoteAdapter;
-import com.medvedev.nikita.notes.utils.RequestManager;
 import com.medvedev.nikita.notes.utils.SessionManager;
 import com.medvedev.nikita.notes.utils.SharedPreferencesManager;
-
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private SessionManager session;
