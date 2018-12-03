@@ -11,6 +11,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.medvedev.nikita.notes.utils.DBManager;
 import com.medvedev.nikita.notes.utils.ErrorManager;
 import com.medvedev.nikita.notes.utils.SessionManager;
 import com.medvedev.nikita.notes.utils.SharedPreferencesManager;
@@ -40,16 +41,8 @@ public class MainActivity extends AppCompatActivity {
        // listView = findViewById(R.id.include);
         //listView.setAdapter(noteAdapter);
     }
-    protected void onRequestNotesError(int errCode){
 
-        Toast.makeText(this, ErrorManager.errorToResID(errCode), Toast.LENGTH_LONG).show();
-    }
-  /*  protected void onGetNotes(Notes notes) {
-        //dbSetNotes(notes);
-        List<Note> noteList = notes.getNotes();
-        NoteAdapter noteAdapter = new NoteAdapter(this, noteList);
-        listView.setAdapter(noteAdapter);
-    }*/
+
 
 
     @Override
@@ -68,13 +61,13 @@ public class MainActivity extends AppCompatActivity {
     }
     private void openNewNoteActivity(View v)
     {
+        //TODO check this
+        DBManager dbManager = new DBManager();
         Intent intent = new Intent(this, NewNoteActivity.class);
+        intent.putExtra("title","");
+        intent.putExtra("noteText","");
+        intent.putExtra("note_id",dbManager.dbGetNewNoteID());
         startActivity(intent);
         //finish();
     }
-    private void openNote(int id)
-    {
-        // TODO: 02.12.2018 Implement
-    }
-
 }
