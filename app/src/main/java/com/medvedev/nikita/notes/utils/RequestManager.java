@@ -26,6 +26,7 @@ public class RequestManager {
     public static final String ADD_NOTE = "add_note";
     public static final String GET_NOTES = "get_notes";
     public static final String TOKEN_LOGIN = "update_token";
+    public static final String UPDATE_NOTE = "edit_note";
     public static final int OK = 0;
     public static final int ERROR = 1;
 
@@ -37,6 +38,7 @@ public class RequestManager {
         commandMap.put(ADD_NOTE, new Command(ADD_NOTE, Request.Method.POST));
         commandMap.put(GET_NOTES, new Command(GET_NOTES, Request.Method.GET));
         commandMap.put(TOKEN_LOGIN, new Command(TOKEN_LOGIN, Request.Method.POST));
+        commandMap.put(UPDATE_NOTE,new Command(UPDATE_NOTE,Request.Method.POST));
     }
 
     //Другие запросы можно строить по такому же принципу
@@ -48,6 +50,21 @@ public class RequestManager {
                 body,
                 Token.class);
     }
+
+    public static void updateNoteRequest(Note note, Consumer<Note> onSuccess, Consumer<Integer> onError) {
+
+        doRequest(UPDATE_NOTE,
+                (req, respNote) -> onSuccess.accept(new Note()
+                        .setCreated(respNote.getCreated())
+                        .setId(respNote.getId())
+                        .setNote(respNote.getNote())
+                        .setTitle(respNote.getTitle())),
+                (req, errCode) ->
+                        onError.accept(errCode),
+                note,
+                Note.class);
+    }
+
     //FIXME Take created time as parameter?
     public static void addNoteRequest(String title, String note, Consumer<Note> onSuccess, Consumer<Integer> onError) {
         doRequest(ADD_NOTE,
@@ -55,7 +72,7 @@ public class RequestManager {
                         onSuccess.accept(new Note()
                                 .setCreated(respNote.getCreated())
                                 .setId(respNote.getId())
-                                .setNote(reqNote.getNote())
+                                .setNote(respNote.getNote())
                                 .setTitle(respNote.getTitle())),
                 (n, errCode) -> onError.accept(errCode),
                 new Note().setNote(note).setTitle(title),
@@ -84,7 +101,7 @@ public class RequestManager {
                 Token.class);
     }
 
-    public static void regRequest(RegisterData body, Consumer<String> onSuccess,Consumer<Integer> onError) {
+    public static void regRequest(RegisterData body, Consumer<String> onSuccess, Consumer<Integer> onError) {
         doRequest(REGISTER,
                 (l, t) -> onSuccess.accept(t.getToken()),
                 (params, errCode) -> onError.accept(errCode),

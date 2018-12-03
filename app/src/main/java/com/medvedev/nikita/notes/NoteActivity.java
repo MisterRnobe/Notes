@@ -13,10 +13,15 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.medvedev.nikita.notes.objects.Note;
 import com.medvedev.nikita.notes.objects.Notes;
+import com.medvedev.nikita.notes.objects.Token;
 import com.medvedev.nikita.notes.utils.DBManager;
+import com.medvedev.nikita.notes.utils.ErrorManager;
+import com.medvedev.nikita.notes.utils.RequestManager;
+import com.medvedev.nikita.notes.utils.SharedPreferencesManager;
 
 public class NoteActivity extends AppCompatActivity {
 
@@ -33,19 +38,32 @@ public class NoteActivity extends AppCompatActivity {
         noteText = findViewById(R.id.note_text);
         noteText.setText(intent.getStringExtra("noteText"));
         btn = findViewById(R.id.saveChanges);
-        btn.setOnClickListener(this::saveChanges);
+        btn.setOnClickListener((v)->RequestManager.updateNoteRequest(
+                new Note()
+                        .setId(getIntent().getIntExtra("note_id",-1))
+                        .setTitle(title.getText().toString())
+                        .setNote(noteText.getText().toString())
+                        .setToken(SharedPreferencesManager.getInstance().getToken()),
+                this::saveChanges,
+                this::onUpdateError));
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
     }
 
 
+
+    private void onUpdateError(int errCode) {
+        Toast.makeText(this,ErrorManager.errorToResID(errCode),Toast.LENGTH_LONG).show();
+
+    }
+
+
     //мое
-    private void saveChanges(View v){
-        int id = getIntent().getIntExtra("note_id",-1);
-        Note note = new Note().setId(id).setTitle(title.getText().toString()).setNote(noteText.getText().toString());
+    //FIXME bug list doesnt upd
+    private void saveChanges(Note note){
+        Log.i("saveChanges",note.getTitle()+note.getId());
         DBManager myDB = new DBManager();
         myDB.dbUpdateNote(note);
-        //TODO: update request to server
         finish();
     }//мое
 

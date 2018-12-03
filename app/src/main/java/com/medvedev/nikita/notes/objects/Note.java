@@ -64,7 +64,7 @@ public class Note extends Body {
                 .putFluent("title", title)
                 .putFluent("note", note)
                 .putFluent("created", created)
-                .putFluent("id", id)
+                .putFluent("noteId", id)
                 .putFluent("token", token);
     }
 }
