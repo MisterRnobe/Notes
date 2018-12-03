@@ -48,7 +48,7 @@ public class RequestManager {
                 body,
                 Token.class);
     }
-
+    //FIXME Take created time as parameter?
     public static void addNoteRequest(String title, String note, Consumer<Note> onSuccess, Consumer<Integer> onError) {
         doRequest(ADD_NOTE,
                 (reqNote, respNote) ->
