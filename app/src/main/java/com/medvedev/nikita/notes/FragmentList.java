@@ -1,18 +1,24 @@
 package com.medvedev.nikita.notes;
 
 import android.content.ContentValues;
+import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.util.Log;
+import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.medvedev.nikita.notes.objects.Note;
 import com.medvedev.nikita.notes.objects.Notes;
 import com.medvedev.nikita.notes.objects.NotesRequest;
 import com.medvedev.nikita.notes.objects.Token;
+import com.medvedev.nikita.notes.utils.DBManager;
 import com.medvedev.nikita.notes.utils.ErrorManager;
 import com.medvedev.nikita.notes.utils.RequestManager;
 import com.medvedev.nikita.notes.utils.SharedPreferencesManager;
@@ -25,13 +31,12 @@ import java.util.Map;
 import static android.content.Context.MODE_PRIVATE;
 
 public class FragmentList extends ListFragment {
-    List<String> titles = new ArrayList<>();
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-//        Token token = new Token().setToken(SharedPreferencesManager.getInstance().getToken());
-//        RequestManager.requestNotes(new NotesRequest().setCount(20).setOffset(0).setToken(token.getToken()), this::onGetNotes,this::onRequestNotesError);
+       Token token = new Token().setToken(SharedPreferencesManager.getInstance().getToken());
+        RequestManager.requestNotes(new NotesRequest().setCount(20).setOffset(0).setToken(token.getToken()), this::onGetNotes,this::onRequestNotesError);
     }
 
     protected void onRequestNotesError(int errCode){
@@ -39,46 +44,31 @@ public class FragmentList extends ListFragment {
         Toast.makeText(getActivity(), ErrorManager.errorToResID(errCode), Toast.LENGTH_LONG).show();
     }
     protected void onGetNotes(Notes notes) {
-        dbSetNotes(notes);
-        List<Note> noteList = notes.getNotes();
-        for(Note note : noteList){
-            titles.add(note.getTitle());
-        }
-        setList(titles);
+        DBManager myDB = new DBManager();
+        myDB.dbSetNotes(notes);
+        drawNotes();
     }
-    private void dbSetNotes(Notes notes){
-        SQLiteDatabase myDB = getActivity().openOrCreateDatabase("notes.db",MODE_PRIVATE,null);
-        myDB.execSQL("CREATE TABLE IF NOT EXISTS notes (id INT, title VARCHAR(200), note TEXT, created INT)");
-        myDB.execSQL("DELETE FROM notes");
-        ContentValues row = new ContentValues();
-        List<Note> noteList = notes.getNotes();
-        for (Note n : noteList) {
-            row.put("id",n.getId());
-            row.put("title",n.getTitle());
-            row.put("note",n.getNote());
-            row.put("created",n.getCreated());
-            myDB.insert("notes",null,row);
-        }
-        myDB.close();
-    }
-    private Notes dbGetNotes(){
-        Notes notes = new Notes();
-        SQLiteDatabase myDB = getActivity().openOrCreateDatabase("notes.db",MODE_PRIVATE,null);
-        Cursor result = myDB.rawQuery("SELECT * FROM notes",null);
-        while(result.moveToNext()){
-            notes.addNote(new Note()
-                    .setId(result.getInt(0))
-                    .setTitle(result.getString(1))
-                    .setNote(result.getString(2))
-                    .setCreated(result.getLong(3)));
-        }
-        result.close();
-        myDB.close();
-        return notes;
-    }
-    private void setList(List<String> titles){
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(),
-                android.R.layout.simple_list_item_1, titles);
+    public void drawNotes(){
+        DBManager myDB = new DBManager();
+        List<Note> noteList = myDB.dbGetNotes().getNotes();
+        ArrayAdapter<Note> adapter = new ArrayAdapter<>(getActivity(),
+                android.R.layout.simple_list_item_1, noteList);
         setListAdapter(adapter);
     }
+    @Override
+    public void onResume() {
+        super.onResume();
+        drawNotes();
+    }
+
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        super.onListItemClick(l, v, position, id);
+        Context activity = getActivity();
+        Note note = (Note)(getListAdapter()).getItem(position);
+        Intent intent = new Intent(activity, NoteActivity.class);
+        intent.putExtra("title",note.getTitle());
+        intent.putExtra("note",note.getNote());
+        intent.putExtra("note_id",note.getId());
+        activity.startActivity(intent);
+      }
 }
