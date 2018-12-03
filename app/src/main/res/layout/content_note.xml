@@ -20,7 +20,16 @@
     <EditText
         android:id="@+id/note_text"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="381dp"
         android:ems="10"
-        android:inputType="textMultiLine" />
+        android:gravity="start"
+        android:inputType="textMultiLine"
+        android:textAlignment="viewStart"
+        tools:ignore="RtlCompat" />
+
+    <Button
+        android:id="@+id/saveChanges"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/save_chng" />
 </LinearLayout>
