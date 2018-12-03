@@ -21,7 +21,7 @@ import com.medvedev.nikita.notes.utils.DBManager;
 public class NoteActivity extends AppCompatActivity {
 
     private EditText title, noteText;
-    private Button btn;
+    private FloatingActionButton btn;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,6 +37,8 @@ public class NoteActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
     }
+
+
     //мое
     private void saveChanges(View v){
         int id = getIntent().getIntExtra("note_id",-1);
