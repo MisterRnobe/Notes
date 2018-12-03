@@ -42,6 +42,7 @@
     <string name="wrong_function">Wrong function</string>
     <string name="add_note_title">Title:</string>
     <string name="add_note_text">Text:</string>
+    <string name="save_chng">Save changes</string>
     <string name="title_activity_note">NoteActivity</string>
 
 </resources>
