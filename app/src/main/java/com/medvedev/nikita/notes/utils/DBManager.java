@@ -28,6 +28,16 @@ public class DBManager {
         }
     }
 
+    public int dbGetNewNoteID(){
+        SQLiteDatabase myDB = AppController.getAppContext().openOrCreateDatabase("notes.db", MODE_PRIVATE, null);
+        Cursor result = myDB.rawQuery("SELECT id FROM notes", null);
+        result.moveToLast();
+        int id = result.getInt(0);
+        result.close();
+        myDB.close();
+        Log.i("DBMANAGER","value " + id);
+        return id+1;
+    }
     public void dbAddNote(Note note) {
         SQLiteDatabase myDB = AppController.getAppContext().openOrCreateDatabase("notes.db", MODE_PRIVATE, null);
         ContentValues row = new ContentValues();
@@ -61,10 +71,6 @@ public class DBManager {
                     .setNote(result.getString(2))
                     .setCreated(result.getLong(3)));
         }
-        if(notes.getNotes().isEmpty())
-            Log.i("123123","notes empty");
-        else
-            Log.i("123123","no empty");
         result.close();
         myDB.close();
         return notes;
