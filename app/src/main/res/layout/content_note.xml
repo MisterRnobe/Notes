@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="20dp"
+    android:paddingLeft="10dp"
+    android:paddingTop="10dp"
+    android:paddingRight="10dp"
+    android:paddingBottom="0dp"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".NoteActivity"
     tools:showIn="@layout/activity_note">
@@ -14,22 +17,30 @@
         android:id="@+id/note_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
         android:ems="10"
         android:inputType="textPersonName" />
+
 
     <EditText
         android:id="@+id/note_text"
         android:layout_width="match_parent"
-        android:layout_height="381dp"
+        android:layout_height="460dp"
+        android:layout_below="@+id/note_title"
+        android:layout_marginTop="8dp"
         android:ems="10"
         android:gravity="start"
         android:inputType="textMultiLine"
         android:textAlignment="viewStart"
         tools:ignore="RtlCompat" />
 
-    <Button
+    <android.support.design.widget.FloatingActionButton
         android:id="@+id/saveChanges"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/save_chng" />
-</LinearLayout>
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="10dp"
+        app:rippleColor="@color/design_default_color_primary_dark"
+        app:srcCompat="@android:drawable/ic_menu_save" />
+</RelativeLayout>
