@@ -39,26 +39,25 @@ public class MainActivity extends AppCompatActivity {
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(this::openNewNoteActivity);
 
-        Token token = new Token().setToken(SharedPreferencesManager.getInstance().getToken());
-        RequestManager.requestNotes(new NotesRequest().setCount(20).setOffset(0).setToken(token.getToken()), this::onGetNotes,this::onRequestNotesError);
-
+        //Token token = new Token().setToken(SharedPreferencesManager.getInstance().getToken());
+      //  RequestManager.requestNotes(new NotesRequest().setCount(20).setOffset(0).setToken(token.getToken()), this::onGetNotes,this::onRequestNotesError);
 
         //List<Note> notes = Arrays.asList(new Note().setTitle("Тайтл1"), new Note().setTitle("ээ блэт"));
         //NoteAdapter noteAdapter = new NoteAdapter(this, notes);
         //View include = findViewById(R.layout.content_main);
-        listView = findViewById(R.id.include);
+       // listView = findViewById(R.id.include);
         //listView.setAdapter(noteAdapter);
     }
     protected void onRequestNotesError(int errCode){
 
         Toast.makeText(this, ErrorManager.errorToResID(errCode), Toast.LENGTH_LONG).show();
     }
-    protected void onGetNotes(Notes notes) {
+  /*  protected void onGetNotes(Notes notes) {
         //dbSetNotes(notes);
         List<Note> noteList = notes.getNotes();
         NoteAdapter noteAdapter = new NoteAdapter(this, noteList);
         listView.setAdapter(noteAdapter);
-    }
+    }*/
 
 
     @Override
