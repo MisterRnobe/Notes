@@ -22,7 +22,7 @@ import com.medvedev.nikita.notes.utils.SharedPreferencesManager;
 import java.util.List;
 
 public class FragmentList extends ListFragment {
-
+    boolean started = false;
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -46,12 +46,16 @@ public class FragmentList extends ListFragment {
              //   android.R.layout.simple_list_item_2, noteList);
         setListAdapter(new NoteAdapter(getActivity(), noteList));
     }
+    //TODO startActivityforresult
     @Override
     public void onResume() {
         super.onResume();
-        drawNotes();
+        if(started) {
+            drawNotes();
+        } else {
+            started = true;
+        }
     }
-
     public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
         Context activity = getActivity();
