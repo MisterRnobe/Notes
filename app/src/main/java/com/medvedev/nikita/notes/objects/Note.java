@@ -45,7 +45,10 @@ public class Note extends Body {
         this.id = id;
         return this;
     }
-
+    @Override
+    public String toString(){
+        return title;
+    }
     public long getCreated() {
         return created;
     }
