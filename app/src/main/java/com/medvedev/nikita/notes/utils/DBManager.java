@@ -54,7 +54,7 @@ public class DBManager {
         SQLiteStatement stmt = myDB.compileStatement("UPDATE notes SET title=?, note=? WHERE id=?");
         stmt.bindString(1,note.getTitle());
         stmt.bindString(2,note.getNote());
-        stmt.bindString(3,String.valueOf(note.getId()));
+        stmt.bindLong(3,note.getId());
         stmt.execute();
         stmt.close();
         myDB.close();
