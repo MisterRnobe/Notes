@@ -56,7 +56,7 @@ public class RequestManager {
         doRequest(UPDATE_NOTE,
                 (req, respNote) -> onSuccess.accept(new Note()
                         .setCreated(respNote.getCreated())
-                        .setId(req.getId())
+                        .setId(respNote.getId())
                         .setNote(respNote.getNote())
                         .setTitle(respNote.getTitle())),
                 (req, errCode) ->

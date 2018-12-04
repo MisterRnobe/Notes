@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode==0)
+        if (resultCode == 0)
             return;
         if (resultCode == ResultCodes.EDIT_NOTE) {
             String title = data.getStringExtra("title");
