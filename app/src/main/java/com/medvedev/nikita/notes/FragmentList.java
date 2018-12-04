@@ -3,7 +3,9 @@ package com.medvedev.nikita.notes;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ListFragment;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -22,7 +24,7 @@ import com.medvedev.nikita.notes.utils.SharedPreferencesManager;
 import java.util.List;
 
 public class FragmentList extends ListFragment {
-    boolean started = false;
+    private NoteAdapter noteAdapter;
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -37,25 +39,46 @@ public class FragmentList extends ListFragment {
     protected void onGetNotes(Notes notes) {
         DBManager myDB = new DBManager();
         myDB.dbSetNotes(notes);
-        drawNotes();
+        noteAdapter = new NoteAdapter(getActivity(),notes.getNotes());
+        setListAdapter(noteAdapter);
     }
     public void drawNotes(){
         DBManager myDB = new DBManager();
         List<Note> noteList = myDB.dbGetNotes().getNotes();
-        //ArrayAdapter<Note> adapter = new ArrayAdapter<>(getActivity(),
-             //   android.R.layout.simple_list_item_2, noteList);
-        setListAdapter(new NoteAdapter(getActivity(), noteList));
+        noteAdapter.refreshNotes(noteList);
     }
-    //TODO startActivityforresult
     @Override
-    public void onResume() {
-        super.onResume();
-        if(started) {
-            drawNotes();
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == 1) {
+            String title = data.getStringExtra("title");
+            String noteText = data.getStringExtra("note");
+            int note_id = data.getIntExtra("note_id",-1);
+            Log.i("onActivityResult",title+" "+noteText);
+            RequestManager.updateNoteRequest(
+                    new Note()
+                            .setId(note_id)
+                            .setTitle(title)
+                            .setNote(noteText)
+                            .setToken(SharedPreferencesManager.getInstance().getToken()),
+                    this::saveChanges,
+                    this::onUpdateError);
         } else {
-            started = true;
+            Toast.makeText(getActivity(), R.string.bad_result, Toast.LENGTH_LONG).show();
         }
+
     }
+    private void onUpdateError(int errCode) {
+        Toast.makeText(getActivity(),ErrorManager.errorToResID(errCode),Toast.LENGTH_LONG).show();
+
+    }
+
+    private void saveChanges(Note note){
+        DBManager myDB = new DBManager();
+        myDB.dbUpdateNote(note);
+        drawNotes();
+    }
+
     public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
         Context activity = getActivity();
@@ -64,6 +87,6 @@ public class FragmentList extends ListFragment {
         intent.putExtra("title",note.getTitle());
         intent.putExtra("noteText",note.getNote());
         intent.putExtra("note_id",note.getId());
-        activity.startActivity(intent);
+        startActivityForResult(intent,1);
       }
 }

@@ -50,13 +50,13 @@ public class RequestManager {
                 body,
                 Token.class);
     }
-
+    //TODO change req.getID() w/ respNote.getID() on update and add
     public static void updateNoteRequest(Note note, Consumer<Note> onSuccess, Consumer<Integer> onError) {
 
         doRequest(UPDATE_NOTE,
                 (req, respNote) -> onSuccess.accept(new Note()
                         .setCreated(respNote.getCreated())
-                        .setId(respNote.getId())
+                        .setId(req.getId())
                         .setNote(respNote.getNote())
                         .setTitle(respNote.getTitle())),
                 (req, errCode) ->
@@ -65,14 +65,13 @@ public class RequestManager {
                 Note.class);
     }
 
-    //FIXME Take created time as parameter?
     public static void addNoteRequest(String title, String note, Consumer<Note> onSuccess, Consumer<Integer> onError) {
         doRequest(ADD_NOTE,
                 (reqNote, respNote) ->
                         onSuccess.accept(new Note()
                                 .setCreated(respNote.getCreated())
                                 .setId(respNote.getId())
-                                .setNote(respNote.getNote())
+                                .setNote(reqNote.getNote())
                                 .setTitle(respNote.getTitle())),
                 (n, errCode) -> onError.accept(errCode),
                 new Note().setNote(note).setTitle(title),

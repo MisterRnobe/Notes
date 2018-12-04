@@ -26,6 +26,12 @@ public class NoteAdapter extends BaseAdapter {
         layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
+    public void refreshNotes(List<Note> notes){
+        this.notes.clear();
+        this.notes.addAll(notes);
+        notifyDataSetChanged();
+    }
+
     @Override
     public int getCount() {
         return notes.size();

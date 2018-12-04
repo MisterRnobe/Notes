@@ -2,9 +2,11 @@ package com.medvedev.nikita.notes;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -31,18 +33,7 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(this::openNewNoteActivity);
-
-        //Token token = new Token().setToken(SharedPreferencesManager.getInstance().getToken());
-      //  RequestManager.requestNotes(new NotesRequest().setCount(20).setOffset(0).setToken(token.getToken()), this::onGetNotes,this::onRequestNotesError);
-
-        //List<Note> notes = Arrays.asList(new Note().setTitle("Тайтл1"), new Note().setTitle("ээ блэт"));
-        //NoteAdapter noteAdapter = new NoteAdapter(this, notes);
-        //View include = findViewById(R.layout.content_main);
-       // listView = findViewById(R.id.include);
-        //listView.setAdapter(noteAdapter);
     }
-
-
 
 
     @Override
@@ -59,15 +50,25 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
-    private void openNewNoteActivity(View v)
-    {
-        //TODO check this
-        DBManager dbManager = new DBManager();
+
+    private void openNewNoteActivity(View v) {
         Intent intent = new Intent(this, NewNoteActivity.class);
-        intent.putExtra("title","");
-        intent.putExtra("noteText","");
-        intent.putExtra("note_id",dbManager.dbGetNewNoteID());
-        startActivity(intent);
-        //finish();
+        startActivityForResult(intent, 0);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == 0) {
+            Log.i("onActivityResult","Im here, lol");
+            String title = data.getStringExtra("title");
+            String note = data.getStringExtra("note");
+            //TODO add request
+            //TODO SQLite insert
+            //todo fragment redraw list
+        } else {
+            Toast.makeText(this, R.string.bad_result, Toast.LENGTH_LONG).show();
+        }
+
     }
 }
