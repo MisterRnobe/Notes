@@ -7,7 +7,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ListFragment;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -19,12 +18,16 @@ import com.medvedev.nikita.notes.utils.DBManager;
 import com.medvedev.nikita.notes.utils.ErrorManager;
 import com.medvedev.nikita.notes.utils.NoteAdapter;
 import com.medvedev.nikita.notes.utils.RequestManager;
+import com.medvedev.nikita.notes.utils.ResultCodes;
 import com.medvedev.nikita.notes.utils.SharedPreferencesManager;
 
 import java.util.List;
 
 public class FragmentList extends ListFragment {
     private NoteAdapter noteAdapter;
+    public void logjopa(){
+        Log.i("onADD","JOPA");
+    }
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -42,38 +45,22 @@ public class FragmentList extends ListFragment {
         noteAdapter = new NoteAdapter(getActivity(),notes.getNotes());
         setListAdapter(noteAdapter);
     }
+
     public void drawNotes(){
         DBManager myDB = new DBManager();
         List<Note> noteList = myDB.dbGetNotes().getNotes();
         noteAdapter.refreshNotes(noteList);
     }
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == 1) {
-            String title = data.getStringExtra("title");
-            String noteText = data.getStringExtra("note");
-            int note_id = data.getIntExtra("note_id",-1);
-            Log.i("onActivityResult",title+" "+noteText);
-            RequestManager.updateNoteRequest(
-                    new Note()
-                            .setId(note_id)
-                            .setTitle(title)
-                            .setNote(noteText)
-                            .setToken(SharedPreferencesManager.getInstance().getToken()),
-                    this::saveChanges,
-                    this::onUpdateError);
-        } else {
-            Toast.makeText(getActivity(), R.string.bad_result, Toast.LENGTH_LONG).show();
-        }
 
-    }
-    private void onUpdateError(int errCode) {
-        Toast.makeText(getActivity(),ErrorManager.errorToResID(errCode),Toast.LENGTH_LONG).show();
 
+    public void addNote(Note note){
+        DBManager myDB = new DBManager();
+        myDB.dbAddNote(note);
+        drawNotes();
     }
 
-    private void saveChanges(Note note){
+
+    public void updateNote(Note note){
         DBManager myDB = new DBManager();
         myDB.dbUpdateNote(note);
         drawNotes();

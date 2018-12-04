@@ -43,4 +43,5 @@
     <string name="add_note_title">Название:</string>
     <string name="add_note_text">Текст:</string>
     <string name="save_chng">Сохранить изменения</string>
+    <string name="bad_result">Некорректный результат</string>
 </resources>

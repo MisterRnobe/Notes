@@ -65,16 +65,16 @@ public class RequestManager {
                 Note.class);
     }
 
-    public static void addNoteRequest(String title, String note, Consumer<Note> onSuccess, Consumer<Integer> onError) {
+    public static void addNoteRequest(Note note, Consumer<Note> onSuccess, Consumer<Integer> onError) {
         doRequest(ADD_NOTE,
                 (reqNote, respNote) ->
                         onSuccess.accept(new Note()
                                 .setCreated(respNote.getCreated())
                                 .setId(respNote.getId())
                                 .setNote(reqNote.getNote())
-                                .setTitle(respNote.getTitle())),
+                                .setTitle(reqNote.getTitle())),
                 (n, errCode) -> onError.accept(errCode),
-                new Note().setNote(note).setTitle(title),
+                note,
                 Note.class);
     }
 

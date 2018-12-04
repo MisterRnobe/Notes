@@ -43,6 +43,7 @@
     <string name="add_note_title">Title:</string>
     <string name="add_note_text">Text:</string>
     <string name="save_chng">Save changes</string>
-    <string name="title_activity_note">NoteActivity</string>
+    <string name="title_activity_note" translatable="false">NoteActivity</string>
+    <string name="bad_result">Bad result</string>
 
 </resources>
