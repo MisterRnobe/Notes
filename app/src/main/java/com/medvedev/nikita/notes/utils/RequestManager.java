@@ -27,6 +27,7 @@ public class RequestManager {
     public static final String GET_NOTES = "get_notes";
     public static final String TOKEN_LOGIN = "update_token";
     public static final String UPDATE_NOTE = "edit_note";
+    public static final String REMOVE_NOTE = "remove_note";
     public static final int OK = 0;
     public static final int ERROR = 1;
 
@@ -39,9 +40,9 @@ public class RequestManager {
         commandMap.put(GET_NOTES, new Command(GET_NOTES, Request.Method.GET));
         commandMap.put(TOKEN_LOGIN, new Command(TOKEN_LOGIN, Request.Method.POST));
         commandMap.put(UPDATE_NOTE,new Command(UPDATE_NOTE,Request.Method.POST));
+        commandMap.put(REMOVE_NOTE,new Command(REMOVE_NOTE,Request.Method.POST));
     }
 
-    //Другие запросы можно строить по такому же принципу
     public static void loginRequest(LoginPasswordData body, Consumer<String> onSuccess, Consumer<Integer> onError) {
 
         doRequest(LOGIN,
@@ -50,7 +51,6 @@ public class RequestManager {
                 body,
                 Token.class);
     }
-    //TODO change req.getID() w/ respNote.getID() on update and add
     public static void updateNoteRequest(Note note, Consumer<Note> onSuccess, Consumer<Integer> onError) {
 
         doRequest(UPDATE_NOTE,
@@ -64,7 +64,16 @@ public class RequestManager {
                 note,
                 Note.class);
     }
-
+    //TODO change req.getID with resp.getId
+    public static void deleteNoteRequest(Note note, Consumer<Integer> onSuccess,Consumer<Integer> onError){
+        doRequest(REMOVE_NOTE,
+                (req,resp)->
+                        onSuccess.accept(req.getId()),
+                (req,errCode)->
+                        onError.accept(errCode),
+                note,
+                Note.class);
+    }
     public static void addNoteRequest(Note note, Consumer<Note> onSuccess, Consumer<Integer> onError) {
         doRequest(ADD_NOTE,
                 (reqNote, respNote) ->

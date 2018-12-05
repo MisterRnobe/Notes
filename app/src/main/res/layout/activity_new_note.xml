@@ -49,6 +49,7 @@ tools:context=".NoteActivity">
             android:layout_height="match_parent"
             android:layout_below="@+id/addnote_title"
             android:layout_marginTop="-1dp"
+            android:background="@null"
             android:ems="10"
             android:gravity="start"
             android:inputType="textMultiLine"
@@ -62,8 +63,7 @@ tools:context=".NoteActivity">
             android:layout_alignParentRight="true"
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="10dp"
-            app:rippleColor="@color/design_default_color_primary_dark"
-            app:srcCompat="@android:drawable/ic_input_add" />
+            app:srcCompat="@android:drawable/ic_menu_add" />
     </RelativeLayout>
 
 </android.support.design.widget.CoordinatorLayout>

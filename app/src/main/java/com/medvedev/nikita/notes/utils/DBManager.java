@@ -49,7 +49,18 @@ public class DBManager {
         myDB.insert("notes",null,row);
         myDB.close();
     }
+    public void dbDeleteNote(int note_id){
+        Log.i("DBDEL","deleting "+note_id);
+        SQLiteDatabase myDB = AppController.getAppContext().openOrCreateDatabase("notes.db", MODE_PRIVATE, null);
+        SQLiteStatement stmt = myDB.compileStatement("DELETE FROM notes WHERe id=?");
+        Log.i("DBDEL","deleted "+note_id);
+        stmt.bindLong(1,note_id);
+        stmt.execute();
+        stmt.close();
+        myDB.close();
+    }
     public void dbUpdateNote(Note note){
+
         SQLiteDatabase myDB = AppController.getAppContext().openOrCreateDatabase("notes.db", MODE_PRIVATE, null);
         SQLiteStatement stmt = myDB.compileStatement("UPDATE notes SET title=?, note=? WHERE id=?");
         stmt.bindString(1,note.getTitle());
@@ -70,6 +81,7 @@ public class DBManager {
                     .setTitle(result.getString(1))
                     .setNote(result.getString(2))
                     .setCreated(result.getLong(3)));
+            Log.i("DBDEL","notes "+result.getInt(0)+" "+result.getString(1));
         }
         result.close();
         myDB.close();

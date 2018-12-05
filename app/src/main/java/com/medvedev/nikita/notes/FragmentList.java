@@ -52,7 +52,11 @@ public class FragmentList extends ListFragment {
         noteAdapter.refreshNotes(noteList);
     }
 
-
+    public void deleteNote(int note_id){
+        DBManager myDB = new DBManager();
+        myDB.dbDeleteNote(note_id);
+        drawNotes();
+    }
     public void addNote(Note note){
         DBManager myDB = new DBManager();
         myDB.dbAddNote(note);

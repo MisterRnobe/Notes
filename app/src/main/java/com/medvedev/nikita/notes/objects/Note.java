@@ -10,6 +10,14 @@ public class Note extends Body {
     private long created;
     private String token;
 
+    public Note() {
+        this.title = "";
+        this.note = "";
+        this.id = -1;
+        this.created = 0;
+        this.token = "";
+    }
+
     public String getToken() {
         return token;
     }

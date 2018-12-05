@@ -78,7 +78,6 @@ public class MainActivity extends AppCompatActivity {
         } else if (resultCode == ResultCodes.ADD_NOTE) {
             String title = data.getStringExtra("title");
             String note = data.getStringExtra("note");
-            Log.i("onAdd", title + " " + note);
             RequestManager.addNoteRequest(
                     new Note()
                             .setTitle(title)
@@ -86,15 +85,25 @@ public class MainActivity extends AppCompatActivity {
                             .setToken(SharedPreferencesManager.getInstance().getToken()),
                     this::addNote,
                     this::onError);
+        } else if (resultCode == ResultCodes.DELETE_NOTE) {
+            int id = data.getIntExtra("note_id",-1);
+            RequestManager.deleteNoteRequest(new
+                            Note()
+                            .setId(id)
+                            .setToken(SharedPreferencesManager.getInstance().getToken()),
+                    this::deleteNote,
+                    this::onError);
         } else {
             Toast.makeText(this, R.string.bad_result, Toast.LENGTH_LONG).show();
         }
 
     }
-
+    private void deleteNote(int note_id){
+        FragmentList fragmentList = (FragmentList) getSupportFragmentManager().findFragmentById(R.id.fragment);
+        fragmentList.deleteNote(note_id);
+    }
     private void updateNote(Note note) {
         FragmentList fragmentList = (FragmentList) getSupportFragmentManager().findFragmentById(R.id.fragment);
-
         fragmentList.updateNote(note);
     }
 

@@ -12,7 +12,7 @@ import com.medvedev.nikita.notes.utils.ResultCodes;
 public class NoteActivity extends AppCompatActivity {
 
     private EditText title, noteText;
-    private FloatingActionButton btn;
+    private FloatingActionButton saveChanges,deleteNote;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -22,14 +22,22 @@ public class NoteActivity extends AppCompatActivity {
         title.setText(intentFromFragment.getStringExtra("title"));
         noteText = findViewById(R.id.note_text);
         noteText.setText(intentFromFragment.getStringExtra("noteText"));
-        btn = findViewById(R.id.saveChanges);
-        btn.setOnClickListener((v)->returnResult(intentFromFragment.getIntExtra("note_id",-1)));
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        saveChanges = findViewById(R.id.saveChanges);
+        saveChanges.setOnClickListener((v)-> saveNote(intentFromFragment.getIntExtra("note_id",-1)));
+        deleteNote = findViewById(R.id.deleteNote);
+        deleteNote.setOnClickListener((v)->deleteNote(intentFromFragment.getIntExtra("note_id",-1)));
+        Toolbar toolbar =  findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
     }
 
+    private void deleteNote(int id){
+        Intent intent = new Intent();
+        intent.putExtra("note_id",id);
+        setResult(ResultCodes.DELETE_NOTE,intent);
+        finish();
+    }
 
-    private void returnResult(int id){
+    private void saveNote(int id){
         Intent intent = new Intent();
         intent.putExtra("title",title.getText().toString());
         intent.putExtra("note",noteText.getText().toString());
