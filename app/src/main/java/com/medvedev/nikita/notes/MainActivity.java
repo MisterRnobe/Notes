@@ -4,13 +4,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.app.ListFragment;
+import android.support.design.widget.NavigationView;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -18,23 +15,35 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.medvedev.nikita.notes.objects.Note;
-import com.medvedev.nikita.notes.utils.DBManager;
+import com.medvedev.nikita.notes.objects.RegisterData;
+import com.medvedev.nikita.notes.objects.Token;
 import com.medvedev.nikita.notes.utils.ErrorManager;
 import com.medvedev.nikita.notes.utils.RequestManager;
 import com.medvedev.nikita.notes.utils.ResultCodes;
 import com.medvedev.nikita.notes.utils.SessionManager;
 import com.medvedev.nikita.notes.utils.SharedPreferencesManager;
+import com.medvedev.nikita.notes.utils.TokenManager;
 
 public class MainActivity extends AppCompatActivity {
     private SessionManager session;
-    private TextView textView;
+    private TextView textView, headerName, headerEmail;
     private ProgressBar pb;
     private ListView listView;
+    private DrawerLayout drawerLayout;
+    RegisterData userData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        drawerLayout = findViewById(R.id.drawer_layout);
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        View headerView = navigationView.getHeaderView(0);
+        userData = TokenManager.getUserData();
+        headerName = headerView.findViewById(R.id.header_name);
+        headerEmail = headerView.findViewById(R.id.header_email);
+        headerName.setText(userData.getName()+" "+userData.getSurname());
+        headerEmail.setText(userData.getEmail());
         session = new SessionManager(this);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -86,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
                     this::addNote,
                     this::onError);
         } else if (resultCode == ResultCodes.DELETE_NOTE) {
-            int id = data.getIntExtra("note_id",-1);
+            int id = data.getIntExtra("note_id", -1);
             RequestManager.deleteNoteRequest(new
                             Note()
                             .setId(id)
@@ -98,10 +107,12 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
-    private void deleteNote(int note_id){
+
+    private void deleteNote(int note_id) {
         FragmentList fragmentList = (FragmentList) getSupportFragmentManager().findFragmentById(R.id.fragment);
         fragmentList.deleteNote(note_id);
     }
+
     private void updateNote(Note note) {
         FragmentList fragmentList = (FragmentList) getSupportFragmentManager().findFragmentById(R.id.fragment);
         fragmentList.updateNote(note);
