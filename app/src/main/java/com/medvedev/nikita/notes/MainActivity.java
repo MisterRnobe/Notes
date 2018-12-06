@@ -125,6 +125,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void onError(int errCode) {
+        if(errCode==ErrorManager.EXPIRED_TOKEN){
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_TASK_ON_HOME);
+            this.startActivity(intent);
+            finish();
+        }
         Toast.makeText(this, ErrorManager.errorToResID(errCode), Toast.LENGTH_LONG).show();
 
     }

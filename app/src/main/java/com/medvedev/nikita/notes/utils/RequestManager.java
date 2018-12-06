@@ -68,7 +68,7 @@ public class RequestManager {
     public static void deleteNoteRequest(Note note, Consumer<Integer> onSuccess,Consumer<Integer> onError){
         doRequest(REMOVE_NOTE,
                 (req,resp)->
-                        onSuccess.accept(req.getId()),
+                        onSuccess.accept(resp.getId()),
                 (req,errCode)->
                         onError.accept(errCode),
                 note,
@@ -86,7 +86,6 @@ public class RequestManager {
                 note,
                 Note.class);
     }
-
     public static void requestNotes(NotesRequest r, Consumer<Notes> onSuccess, Consumer<Integer> onError) {
         doRequest(GET_NOTES,
                 (req, notes) -> onSuccess.accept(notes),
@@ -94,13 +93,6 @@ public class RequestManager {
                 r,
                 Notes.class);
     }
-
-    /**
-     * Запрос, осуществляющий авторизацию при помощи токена
-     * Если токен верный, сервер вернет новый токен и откроет MainActivity
-     * Если токен неверный, оставит на логин активити
-     */
-
     public static void tokenRequest(Token body, Consumer<String> onSuccess, Consumer<Integer> onError) {
         doRequest(TOKEN_LOGIN,
                 (l, t) -> onSuccess.accept(t.getToken()),
@@ -108,7 +100,6 @@ public class RequestManager {
                 body,
                 Token.class);
     }
-
     public static void regRequest(RegisterData body, Consumer<String> onSuccess, Consumer<Integer> onError) {
         doRequest(REGISTER,
                 (l, t) -> onSuccess.accept(t.getToken()),
@@ -117,17 +108,6 @@ public class RequestManager {
                 Token.class);
     }
 
-    /**
-     * Шаблон, на основе которого можно построить конкретные запросы
-     *
-     * @param function  - Запрашиваемая функция, одна из объявленных в этом классе
-     * @param onSuccess - Callback, вызываемый, когда приходит ответ со статусом OK
-     * @param onError   - Callback, вызываемый, когда приходит ответ со статусом ERROR
-     * @param params    - Параметры, передаваемые в запросе
-     * @param clazz     - Класс, к которому нужно привести тело ответа (поле body)
-     * @param <E>       - Класс, объект которого передается как параметры запроса
-     * @param <T>       - см. clazz
-     */
     private static <E extends Body, T extends Body> void doRequest(String function, BiConsumer<E, T> onSuccess, BiConsumer<E, Integer> onError, E params, Class<T> clazz) {
         Command c = commandMap.get(function);
         if (c == null)
